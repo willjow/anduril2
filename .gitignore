@@ -1,0 +1,21 @@
+# Ignore everything
+/*
+
+!.gitignore
+
+!bin/
+
+!README
+
+!ToyKeeper/
+ToyKeeper/*
+!ToyKeeper/*.h
+
+!ToyKeeper/spaghetti-monster/
+ToyKeeper/spaghetti-monster/*
+!ToyKeeper/spaghetti-monster/COPYING
+!ToyKeeper/spaghetti-monster/meta
+!ToyKeeper/spaghetti-monster/*.c
+!ToyKeeper/spaghetti-monster/*.h
+!ToyKeeper/spaghetti-monster/spaghetti-monster.txt
+!ToyKeeper/spaghetti-monster/anduril/
