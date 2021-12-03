@@ -672,7 +672,14 @@ On most lights, the colors follow this sequence:
 
 In voltage mode, the colors follow the same sequence, in the same order 
 as a rainbow...  with red indicating a low battery and purple indicating 
-a full battery.
+a full battery. The specific voltage/color intervals are:
+
+  - [0V,   3.3V): Red
+  - [3.3V, 3.5V): Yellow
+  - [3.5V, 3.7V): Green
+  - [3.7V, 3.9V): Cyan
+  - [3.9V, 4.1V): Blue
+  - [4.1V, 4.4V): Purple
 
 For lights with a button LED, the button LED typically stays on while 
 the main emitters are on.  Its brightness level is set in a way which 
