@@ -779,7 +779,7 @@ Off              Any     13H               Factory reset (on some lights)
 Off              Any     15+C              Version check
 
 Ramp             Any     1C                Off
-Ramp             Any     1H                Ramp (up, with reversing)
+Ramp             Any     1H                Ramp (up, with configurable reversing)
 Ramp             Any     2H                Ramp (down)
 Ramp             Any     2C                Go to/from ceiling or turbo (configurable)
 Ramp             Full    3C                Change ramp style (smooth / stepped)
