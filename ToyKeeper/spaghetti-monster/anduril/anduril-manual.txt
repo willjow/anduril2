@@ -216,6 +216,9 @@ While the light is on, a few actions are available:
               2: Anduril 2 style.  Ramp -> 2C goes to ceiling,
                  or goes to full power if user ramped up to ceiling first.
               This value also affects momentary turbo in Ramp and Off modes.
+    - Item 5: Configure 1H ramping behavior:
+              0: Enable a window after 1H where another 1H will ramp down
+              1: 1H will always ramp up
 
 Memory determines which brightness level the light goes to with 1 click 
 from off.  There are three types of brightness memory to choose from:
@@ -792,6 +795,7 @@ Ramp		Full	10H	Ramp Extras config menu:
 				2: set manual mem timeout
 				3: ramp after moon or not
 				4: advanced UI turbo style
+                5: 1H ramping behavior
 
 Lockout		Any	1C/1H	Momentary moon (lowest floor)
 Lockout		Any	2C/2H	Momentary moon (highest floor, or manual mem level)
