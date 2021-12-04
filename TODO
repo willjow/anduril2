@@ -1,0 +1,21 @@
+Tasks to do...
+
+- (TODO) Add ramp config for disabling ramp reversing with 1H
+    - Make strobe modes/candle mode inherit this ramp reversing setting?
+
+- (TODO) Set ramp 4H to tint ramp down
+
+- (TODO) Add ramp config for disabling tint ramp reversing with 3H
+
+- (TODO) Set ramp 5C to go to middle of tint ramp for lights with tint ramping (keep
+  as momentary for lights without tint ramp)
+
+- (TODO) Add option to set button led modes independently from aux leds (8C?)
+    - (follow aux, off, low, high)
+
+- (DONE) To help people navigate this repository, it would be helpful to either
+  re-organize the firmwares by hardware type (switch type, MCU, OTC,
+  etc) or somehow tag each of them with relevant hardware requirements.
+
+- (DONE) Similarly, it would be helpful to tag each firmware with its overall
+  purpose and/or style.
