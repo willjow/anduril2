@@ -26,6 +26,10 @@
 uint8_t strobe_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
 
+    #ifdef USE_1H_STYLE_CONFIG
+    uint8_t style_1h = ramp_1h_style;
+    #endif
+
     // 'st' reduces ROM size slightly
     strobe_mode_te st = strobe_type;
 
@@ -98,7 +102,11 @@ uint8_t strobe_state(Event event, uint16_t arg) {
     // reverse ramp direction on hold release
     // ... and save new strobe settings
     else if (event == EV_click1_hold_release) {
+        #ifdef USE_1H_STYLE_CONFIG
+        if (!style_1h) { ramp_direction = -ramp_direction; }
+        #else
         ramp_direction = -ramp_direction;
+        #endif
         save_config();
         return MISCHIEF_MANAGED;
     }

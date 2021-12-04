@@ -42,6 +42,10 @@ uint8_t candle_mode_state(Event event, uint16_t arg) {
     static uint8_t candle_wave3_depth       = CANDLE_WAVE3_MAXDEPTH * CANDLE_AMPLITUDE / 100;
     static uint8_t candle_mode_brightness = 24;
 
+    #ifdef USE_1H_STYLE_CONFIG
+    uint8_t style_1h = ramp_1h_style;
+    #endif
+
     #ifdef USE_SUNSET_TIMER
     // let the candle "burn out" and shut itself off
     // if the user told it to
@@ -74,8 +78,16 @@ uint8_t candle_mode_state(Event event, uint16_t arg) {
     else if (event == EV_click1_hold) {
         // ramp away from extremes
         if (! arg) {
-            if (candle_mode_brightness >= MAX_CANDLE_LEVEL) { ramp_direction = -1; }
-            else if (candle_mode_brightness <= 1) { ramp_direction = 1; }
+            if (candle_mode_brightness >= MAX_CANDLE_LEVEL) {
+                #ifdef USE_1H_STYLE_CONFIG
+                if (!style_1h) { ramp_direction = -1; }
+                #else
+                ramp_direction = -1;
+                #endif
+            }
+            else if (candle_mode_brightness <= 1) {
+                ramp_direction = 1;
+            }
         }
         // change brightness, but not too far
         candle_mode_brightness += ramp_direction;
@@ -85,7 +97,11 @@ uint8_t candle_mode_state(Event event, uint16_t arg) {
     }
     // reverse ramp direction on hold release
     else if (event == EV_click1_hold_release) {
+        #ifdef USE_1H_STYLE_CONFIG
+        if (!style_1h) { ramp_direction = -ramp_direction; }
+        #else
         ramp_direction = -ramp_direction;
+        #endif
         return MISCHIEF_MANAGED;
     }
     // click, hold: change brightness (dimmer)
