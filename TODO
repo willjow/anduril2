@@ -1,8 +1,5 @@
 Tasks to do...
 
-- (DONE?) Add ramp config for disabling ramp reversing with 1H
-- (TODO) Make strobe modes/candle mode inherit this ramp reversing setting?
-
 - (TODO) Set ramp 4H to tint ramp down
 
 - (TODO) Add ramp config for disabling tint ramp reversing with 3H
