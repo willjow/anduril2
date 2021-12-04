@@ -102,6 +102,13 @@
 //#define DEFAULT_2C_STYLE 2  // default to Anduril 2 style
 //#define DEFAULT_2C_STYLE_SIMPLE 0  // no turbo at all
 
+// Config options for 1H while ramping:
+//   - enable or disable reversing the ramp direction during short window after
+//     releasing the 1H input
+// 0 = enable reversing
+// 1 = disable reversing
+#define USE_1H_STYLE_CONFIG
+
 // make the ramps configurable by the user
 #define USE_RAMP_CONFIG
 

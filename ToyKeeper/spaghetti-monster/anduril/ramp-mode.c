@@ -82,6 +82,10 @@ uint8_t steady_state(Event event, uint16_t arg) {
         else { turbo_level = MAX_LEVEL; }
     #endif
 
+    #ifdef USE_1H_STYLE_CONFIG
+    uint8_t style_1h = ramp_1h_style;
+    #endif
+
     #ifdef USE_SUNSET_TIMER
     // handle the shutoff timer first
     static uint8_t timer_orig_level = 0;
@@ -174,12 +178,28 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // fix ramp direction on first frame if necessary
         if (!arg) {
             // click, hold should always go down if possible
-            if (event == EV_click2_hold) { ramp_direction = -1; }
+            if (event == EV_click2_hold) {
+                ramp_direction = -1;
+            }
             // make it ramp down instead, if already at max
-            else if (actual_level >= mode_max) { ramp_direction = -1; }
+            else if (actual_level >= mode_max) {
+                #ifdef USE_1H_STYLE_CONFIG
+                if (style_1h) {
+                    #ifdef BLINK_AT_RAMP_CEIL
+                    blip();
+                    #endif
+                } else {
+                    ramp_direction = -1;
+                }
+                #else
+                ramp_direction = -1;
+                #endif
+            }
             // make it ramp up if already at min
             // (off->hold->stepped_min->release causes this state)
-            else if (actual_level <= mode_min) { ramp_direction = 1; }
+            else if (actual_level <= mode_min) {
+                ramp_direction = 1;
+            }
         }
         // if the button is stuck, err on the side of safety and ramp down
         else if ((arg > TICKS_PER_SECOND * 5
@@ -249,7 +269,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // reverse ramp direction on hold release
     else if ((event == EV_click1_hold_release)
              || (event == EV_click2_hold_release)) {
+        #ifdef USE_1H_STYLE_CONFIG
+        if (event == EV_click2_hold_release || !style_1h) {
+            ramp_direction = -ramp_direction;
+        }
+        #else
         ramp_direction = -ramp_direction;
+        #endif
         #ifdef START_AT_MEMORIZED_LEVEL
         save_config_wl();
         #endif
@@ -535,16 +561,26 @@ void ramp_extras_config_save(uint8_t step, uint8_t value) {
 
     #ifdef USE_2C_STYLE_CONFIG
     // item 4: Anduril 1 2C turbo, or Anduril 2 2C ceiling?
+    // 0 = no turbo, only ceiling
     // 1 = Anduril 1, 2C turbo
     // 2+ = Anduril 2, 2C ceiling
     else if (4 == step) {
         ramp_2c_style = value;
     }
     #endif
+
+    #ifdef USE_1H_STYLE_CONFIG
+    // item 5: disable reversing with 1H?
+    // 0 = enable reversing with 1H
+    // 1+ = disable reversing with 1H
+    else if (5 == step) {
+        ramp_1h_style = value;
+    }
+    #endif
 }
 
 uint8_t ramp_extras_config_state(Event event, uint16_t arg) {
-    return config_state_base(event, arg, 4, ramp_extras_config_save);
+    return config_state_base(event, arg, 5, ramp_extras_config_save);
 }
 #endif
 

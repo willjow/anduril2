@@ -51,6 +51,9 @@ void load_config() {
         #ifdef USE_2C_STYLE_CONFIG
         ramp_2c_style = eeprom[ramp_2c_style_e];
         #endif
+        #ifdef USE_1H_STYLE_CONFIG
+        ramp_1h_style = eeprom[ramp_1h_style_e];
+        #endif
         #ifdef USE_MANUAL_MEMORY
             manual_memory = eeprom[manual_memory_e];
             #ifdef USE_MANUAL_MEMORY_TIMER
@@ -129,6 +132,9 @@ void save_config() {
     #endif
     #ifdef USE_2C_STYLE_CONFIG
     eeprom[ramp_2c_style_e] = ramp_2c_style;
+    #endif
+    #ifdef USE_1H_STYLE_CONFIG
+    eeprom[ramp_1h_style_e] = ramp_1h_style;
     #endif
     #ifdef USE_MANUAL_MEMORY
         eeprom[manual_memory_e] = manual_memory;

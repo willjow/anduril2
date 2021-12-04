@@ -49,6 +49,9 @@ typedef enum {
     #ifdef USE_2C_STYLE_CONFIG
     ramp_2c_style_e,
     #endif
+    #ifdef USE_1H_STYLE_CONFIG
+    ramp_1h_style_e,
+    #endif
     #ifdef USE_MANUAL_MEMORY
         manual_memory_e,
         #ifdef USE_MANUAL_MEMORY_TIMER

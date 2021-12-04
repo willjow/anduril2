@@ -187,6 +187,13 @@ uint8_t ramp_2c_style = DEFAULT_2C_STYLE;  // 1 = A1 style, 2 = A2 style
 #endif
 #endif
 
+#ifdef USE_1H_STYLE_CONFIG
+#ifndef DEFAULT_1H_STYLE
+#define DEFAULT_1H_STYLE 0
+#endif
+uint8_t ramp_1h_style = DEFAULT_1H_STYLE;  // 0 = enable reversing, 1 = always ramp up
+#endif
+
 #ifdef USE_RAMP_SPEED_CONFIG
 #define ramp_speed (ramp_stepss[0])
 #endif
@@ -196,6 +203,7 @@ uint8_t ramp_2c_style = DEFAULT_2C_STYLE;  // 1 = A1 style, 2 = A2 style
 #endif
 uint8_t dont_ramp_after_moon = DEFAULT_DONT_RAMP_AFTER_MOON;
 #endif
+
 // current values, regardless of style
 uint8_t ramp_floor = RAMP_SMOOTH_FLOOR;
 uint8_t ramp_ceil = RAMP_SMOOTH_CEIL;
