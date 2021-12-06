@@ -768,6 +768,8 @@ Off              Full    5C                Momentary mode
 Off              Full    7C                Aux LEDs: Next pattern
 Off              Full    7H                Aux LEDs: Next color
 Off              Full    9H                Misc config menu (varies per light)
+                                                1: tint ramp config
+                                                2: jump start config
 Off              Full    10C               Enable Simple UI
 Off              Simple  10H               Disable Simple UI
 Off              Full    10H               Simple UI ramp config menu:
