@@ -88,6 +88,13 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     }
     #endif
 
+    #ifdef USE_TINT_RAMPING
+    // disable tint ramping during lockout
+    else if (event == EV_click3_hold) {
+        return MISCHIEF_MANAGED;
+    }
+    #endif
+
     // 4 clicks: exit and turn on
     else if (event == EV_4clicks) {
         #ifdef USE_MANUAL_MEMORY
