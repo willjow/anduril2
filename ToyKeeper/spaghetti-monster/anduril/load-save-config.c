@@ -64,7 +64,6 @@ void load_config() {
             #endif
         #endif
         #ifdef USE_TINT_RAMPING
-            tint = eeprom[tint_e];
             tint_style = eeprom[tint_style_e];
         #endif
         #ifdef USE_JUMP_START
@@ -99,9 +98,15 @@ void load_config() {
         autolock_time = eeprom[autolock_time_e];
         #endif
     }
-    #ifdef START_AT_MEMORIZED_LEVEL
+    #if defined(START_AT_MEMORIZED_LEVEL) \
+        || defined(USE_TINT_RAMPING)
     if (load_eeprom_wl()) {
-        memorized_level = eeprom_wl[0];
+        #ifdef START_AT_MEMORIZED_LEVEL
+        memorized_level = eeprom_wl[memorized_level_e];
+        #endif
+        #ifdef USE_TINT_RAMPING
+        tint = eeprom_wl[tint_e];
+        #endif
     }
     #endif
 }
@@ -146,7 +151,6 @@ void save_config() {
         #endif
     #endif
     #ifdef USE_TINT_RAMPING
-        eeprom[tint_e] = tint;
         eeprom[tint_style_e] = tint_style;
     #endif
     #ifdef USE_JUMP_START
@@ -184,9 +188,15 @@ void save_config() {
     save_eeprom();
 }
 
-#ifdef START_AT_MEMORIZED_LEVEL
+#if defined(START_AT_MEMORIZED_LEVEL) \
+    || defined(USE_TINT_RAMPING)
 void save_config_wl() {
-    eeprom_wl[0] = memorized_level;
+    #ifdef START_AT_MEMORIZED_LEVEL
+    eeprom_wl[memorized_level_e] = memorized_level;
+    #endif
+    #ifdef USE_TINT_RAMPING
+    eeprom_wl[tint_e] = tint;
+    #endif
     save_eeprom_wl();
 }
 #endif

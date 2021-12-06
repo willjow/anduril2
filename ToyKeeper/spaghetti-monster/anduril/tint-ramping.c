@@ -124,7 +124,7 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         tint_ramp_direction = -tint_ramp_direction;
         #endif
         // remember tint after battery change
-        save_config();
+        save_config_wl();
         return EVENT_HANDLED;
     }
 

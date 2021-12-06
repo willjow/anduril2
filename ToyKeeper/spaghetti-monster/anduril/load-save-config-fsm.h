@@ -62,7 +62,6 @@ typedef enum {
         #endif
     #endif
     #ifdef USE_TINT_RAMPING
-        tint_e,
         tint_style_e,
     #endif
     #ifdef USE_JUMP_START
@@ -102,9 +101,19 @@ typedef enum {
 } eeprom_indexes_e;
 #define EEPROM_BYTES eeprom_indexes_e_END
 
-#ifdef START_AT_MEMORIZED_LEVEL
+#if defined(START_AT_MEMORIZED_LEVEL) \
+    || defined(USE_TINT_RAMPING)
 #define USE_EEPROM_WL
-#define EEPROM_WL_BYTES 1
+typedef enum {
+    #ifdef START_AT_MEMORIZED_LEVEL
+    memorized_level_e,
+    #endif
+    #ifdef USE_TINT_RAMPING
+    tint_e,
+    #endif
+    eeprom_wl_indexes_e_END
+} eeprom_wl_indexes_e;
+#define EEPROM_WL_BYTES eeprom_wl_indexes_e_END
 #endif
 
 
