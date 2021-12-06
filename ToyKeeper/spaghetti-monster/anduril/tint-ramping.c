@@ -24,7 +24,7 @@
 
 
 uint8_t tint_ramping_state(Event event, uint16_t arg) {
-    static int8_t tint_ramp_direction = 1;
+    static int8_t tint_ramp_direction = -1;
     static uint8_t prev_tint = 0;
     // don't activate auto-tint modes unless the user hits the edge
     // and keeps pressing for a while
@@ -117,7 +117,7 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         active = 0;  // ignore next hold if it wasn't meant for us
         // reverse
         #ifdef USE_1H_STYLE_CONFIG
-        if ((event == EV_click4_release) || !style_1h) {
+        if ((event == EV_click4_hold_release) || !style_1h) {
             tint_ramp_direction = -tint_ramp_direction;
         }
         #else
