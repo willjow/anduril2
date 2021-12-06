@@ -97,7 +97,7 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         // if the user kept pressing long enough, go the final step
         if (past_edge_counter == 64) {
             past_edge_counter ++;
-            tint ^= 1;  // 0 -> 1, 254 -> 255
+            tint ^= 1;  // 1 -> 0, 254 -> 255
             blip();
         }
         // if tint change stalled, let user know we hit the edge
@@ -123,6 +123,20 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         #else
         tint_ramp_direction = -tint_ramp_direction;
         #endif
+        // remember tint after battery change
+        save_config_wl();
+        return EVENT_HANDLED;
+    }
+
+    // 5 clicks: go to/from the middle tint
+    else if (event == EV_5clicks) {
+        if (tint != 127) {
+            tint = 127;
+        }
+        else {
+            tint = prev_tint;
+        }
+        set_level(actual_level);
         // remember tint after battery change
         save_config_wl();
         return EVENT_HANDLED;

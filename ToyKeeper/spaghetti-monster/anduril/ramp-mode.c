@@ -432,8 +432,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
     #endif  // ifndef USE_TINT_RAMPING
 
-    #ifdef USE_MOMENTARY_MODE
-    // 5 clicks: shortcut to momentary mode
+    #if !defined(USE_TINT_RAMPING) && defined(USE_MOMENTARY_MODE)
+    // 5 clicks: shortcut to momentary mode (on lights with no tint ramping)
     else if (event == EV_5clicks) {
         set_level(0);
         set_state(momentary_state, 0);

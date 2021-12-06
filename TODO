@@ -1,7 +1,6 @@
 Tasks to do...
 
-- (TODO) Set ramp 5C to go to middle of tint ramp for lights with tint ramping (keep
-  as momentary for lights without tint ramp)
+- (TODO) Add config option for tint shortcut (5C) to go to ch1, middle, or ch2
 
 - (TODO) Make 4H from lockout observe "ramp up after moon" setting
 
