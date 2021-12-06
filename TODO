@@ -1,11 +1,9 @@
 Tasks to do...
 
-- (TODO) Set ramp 4H to tint ramp down
-
-- (TODO) Add ramp config for disabling tint ramp reversing with 3H
-
 - (TODO) Set ramp 5C to go to middle of tint ramp for lights with tint ramping (keep
   as momentary for lights without tint ramp)
+
+- (TODO) Move tint to eeprom_wl
 
 - (TODO) Make 4H from lockout observe "ramp up after moon" setting
 
