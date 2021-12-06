@@ -74,7 +74,7 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             else if (tint >= 254) {
                 #ifdef USE_1H_STYLE_CONFIG
                 if (!style_1h) {
-                    tint_ramp_direction = -1
+                    tint_ramp_direction = -1;
                 }
                 #else
                 tint_ramp_direction = -1;
