@@ -7,6 +7,11 @@ Tasks to do...
 - (TODO) Set ramp 5C to go to middle of tint ramp for lights with tint ramping (keep
   as momentary for lights without tint ramp)
 
+- (TODO) Make 4H from lockout observe "ramp up after moon" setting
+
+- (TODO) Smooth voltage readings so aux leds on voltage setting don't oscillate
+  every ~9 secconds
+
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
 
