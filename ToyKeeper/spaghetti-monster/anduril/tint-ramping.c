@@ -48,11 +48,11 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             if (arg) return EVENT_NOT_HANDLED;
 
             // force tint to be 1 or 254
-            if ((event == EV_click4_hold) || (tint != 254)) { tint = 1;}
+            if ((event == EV_click4_hold) || (tint != 1)) { tint = 254;}
 
             if (event == EV_click3_hold) {
                 #ifdef USE_1H_STYLE_CONFIG
-                if (style_1h) { tint = 254; }
+                if (style_1h) { tint = 1; }
                 else { tint ^= 0xFF; }  // invert between 1 and 254
                 #else
                 tint ^= 0xFF;  // invert between 1 and 254
@@ -69,19 +69,19 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             past_edge_counter = 0;  // doesn't start until user hits the edge
             // fix ramp direction on first frame if necessary
             if (event == EV_click4_hold) {
-                tint_ramp_direction = -1;
+                tint_ramp_direction = 1;
             }
             else if (tint >= 254) {
-                #ifdef USE_1H_STYLE_CONFIG
-                if (!style_1h) {
-                    tint_ramp_direction = -1;
-                }
-                #else
                 tint_ramp_direction = -1;
-                #endif
             }
             else if (tint <= 1) {
+                #ifdef USE_1H_STYLE_CONFIG
+                if (!style_1h) {
+                    tint_ramp_direction = 1;
+                }
+                #else
                 tint_ramp_direction = 1;
+                #endif
             }
         }
         // ignore event if we weren't the ones who handled the first frame
