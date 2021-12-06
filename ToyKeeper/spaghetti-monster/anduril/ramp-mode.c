@@ -270,7 +270,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if ((event == EV_click1_hold_release)
              || (event == EV_click2_hold_release)) {
         #ifdef USE_1H_STYLE_CONFIG
-        if (event == EV_click2_hold_release || !style_1h) {
+        if ((event == EV_click2_hold_release) || !style_1h) {
             ramp_direction = -ramp_direction;
         }
         #else
