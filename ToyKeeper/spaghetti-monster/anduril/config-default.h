@@ -105,6 +105,7 @@
 // Config options for 1H while ramping:
 //   - enable or disable reversing the ramp direction during short window after
 //     releasing the 1H input
+//   - also applies to tint ramping and candle/strobe modes
 // 0 = enable reversing
 // 1 = disable reversing
 #define USE_1H_STYLE_CONFIG

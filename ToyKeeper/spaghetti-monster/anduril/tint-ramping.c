@@ -34,8 +34,13 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     // don't look like they were meant to be here
     static uint8_t active = 0;
 
+    #ifdef USE_1H_STYLE_CONFIG
+    uint8_t style_1h = ramp_1h_style;
+    #endif
+
     // click, click, hold: change the tint
-    if (event == EV_click3_hold) {
+    // click, click, click, hold: change the tint downward
+    if ((event == EV_click3_hold) || (event == EV_click4_hold)) {
         ///// tint-toggle mode
         // toggle once on first frame; ignore other frames
         if (tint_style) {
@@ -43,9 +48,16 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             if (arg) return EVENT_NOT_HANDLED;
 
             // force tint to be 1 or 254
-            if (tint != 254) { tint = 1; }
-            // invert between 1 and 254
-            tint = tint ^ 0xFF;
+            if ((event == EV_click4_hold) || (tint != 254)) { tint = 1;}
+
+            if (event == EV_click3_hold) {
+                #ifdef USE_1H_STYLE_CONFIG
+                if (style_1h) { tint = 254; }
+                else { tint ^= 0xFF; }  // invert between 1 and 254
+                #else
+                tint ^= 0xFF;  // invert between 1 and 254
+                #endif
+            }
             set_level(actual_level);
             return EVENT_HANDLED;
         }
@@ -55,6 +67,22 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         if (! arg) {
             active = 1;  // first frame means this is for us
             past_edge_counter = 0;  // doesn't start until user hits the edge
+            // fix ramp direction on first frame if necessary
+            if (event == EV_click4_hold) {
+                tint_ramp_direction = -1;
+            }
+            else if (tint >= 254) {
+                #ifdef USE_1H_STYLE_CONFIG
+                if (!style_1h) {
+                    tint_ramp_direction = -1
+                }
+                #else
+                tint_ramp_direction = -1;
+                #endif
+            }
+            else if (tint <= 1) {
+                tint_ramp_direction = 1;
+            }
         }
         // ignore event if we weren't the ones who handled the first frame
         if (! active) return EVENT_HANDLED;
@@ -84,16 +112,24 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     }
 
     // click, click, hold, release: reverse direction for next ramp
-    else if (event == EV_click3_hold_release) {
+    else if ((event == EV_click3_hold_release)
+             || (event == EV_click4_hold_release)) {
         active = 0;  // ignore next hold if it wasn't meant for us
         // reverse
+        #ifdef USE_1H_STYLE_CONFIG
+        if ((event == EV_click4_release) || !style_1h) {
+            tint_ramp_direction = -tint_ramp_direction;
+        }
+        #else
         tint_ramp_direction = -tint_ramp_direction;
-        if (tint <= 1) tint_ramp_direction = 1;
-        else if (tint >= 254) tint_ramp_direction = -1;
+        #endif
         // remember tint after battery change
         save_config();
         return EVENT_HANDLED;
     }
+
+    // we can't use AUTO_REVERSE_TIME for tint ramping the same manner as in
+    // ramp-mode because EV_tick events will be consumed there
 
     return EVENT_NOT_HANDLED;
 }
