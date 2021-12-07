@@ -39,10 +39,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
     //ramp_update_config();
     //nearest_level(1);  // same effect, takes less space
 
+    uint8_t style_ramp = ramp_style;
     uint8_t mode_min = ramp_floor;
     uint8_t mode_max = ramp_ceil;
     uint8_t step_size;
-    if (ramp_style) { step_size = ramp_discrete_step_size; }
+    if (style_ramp) { step_size = ramp_discrete_step_size; }
     else { step_size = 1; }
 
     // how bright is "turbo"?
@@ -166,12 +167,12 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // click, hold: change brightness (dimmer)
     else if ((event == EV_click1_hold) || (event == EV_click2_hold)) {
         // ramp slower in discrete mode
-        if (ramp_style  &&  (arg % HOLD_TIMEOUT != 0)) {
+        if (style_ramp  &&  (arg % HOLD_TIMEOUT != 0)) {
             return MISCHIEF_MANAGED;
         }
         #ifdef USE_RAMP_SPEED_CONFIG
         // ramp slower if user configured things that way
-        if ((! ramp_style) && (arg % ramp_speed)) {
+        if ((! style_ramp) && (arg % ramp_speed)) {
             return MISCHIEF_MANAGED;
         }
         #endif
@@ -184,13 +185,14 @@ uint8_t steady_state(Event event, uint16_t arg) {
             // make it ramp down instead, if already at max
             else if (actual_level >= mode_max) {
                 #ifdef USE_1H_STYLE_CONFIG
-                if (style_1h) {
-                    #ifdef BLINK_AT_RAMP_CEIL
-                    blip();
-                    #endif
-                } else {
+                if (!style_1h) {
                     ramp_direction = -1;
                 }
+                #ifdef BLINK_AT_RAMP_CEIL
+                else {
+                    blip();
+                }
+                #endif
                 #else
                 ramp_direction = -1;
                 #endif
@@ -226,7 +228,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
         #endif
         memorized_level = nearest_level((int16_t)actual_level \
                           + (step_size * ramp_direction));
-        #if defined(BLINK_AT_RAMP_CEIL) || defined(BLINK_AT_RAMP_MIDDLE)
+        #if defined(BLINK_AT_RAMP_MIDDLE) \
+            || defined(BLINK_AT_RAMP_CEIL) \
+            || defined(BLINK_AT_RAMP_FLOOR)
         // only blink once for each threshold
         if ((memorized_level != actual_level) && (
                 0  // for easier syntax below
@@ -247,13 +251,12 @@ uint8_t steady_state(Event event, uint16_t arg) {
         }
         #endif
         #if defined(BLINK_AT_STEPS)
-        uint8_t foo = ramp_style;
         ramp_style = 1;
         uint8_t nearest = nearest_level((int16_t)actual_level);
-        ramp_style = foo;
+        ramp_style = style_ramp;
         // only blink once for each threshold
         if ((memorized_level != actual_level) &&
-                    (ramp_style == 0) &&
+                    (style_ramp == 0) &&
                     (memorized_level == nearest)
                     )
         {
@@ -484,9 +487,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
 void ramp_config_save(uint8_t step, uint8_t value) {
 
     // 0 = smooth ramp, 1 = stepped ramp, 2 = simple UI's ramp
-    uint8_t style = ramp_style;
+    uint8_t ramp_num = ramp_style;
     #ifdef USE_SIMPLE_UI
-    if (current_state == simple_ui_config_state)  style = 2;
+    if (current_state == simple_ui_config_state) ramp_num = 2;
     #endif
 
     #if defined(USE_SIMPLE_UI) && defined(USE_2C_STYLE_CONFIG)
@@ -500,16 +503,16 @@ void ramp_config_save(uint8_t step, uint8_t value) {
 
     // save adjusted value to the correct slot
     if (value) {
-        // ceiling value is inverted
-        if (step == 2) value = MAX_LEVEL + 1 - value;
-
-        // which option are we configuring?
-        // TODO? maybe rearrange definitions to avoid the need for this table
-        //       (move all ramp values into a single array?)
-        uint8_t *steps[] = { ramp_floors, ramp_ceils, ramp_stepss };
-        uint8_t *option;
-        option = steps[step-1];
-        option[style] = value;
+        if (1 == step) {
+            ramp_floors[ramp_num] = value;
+        }
+        else if (2 == step) {
+            // subtract from MAX_LEVEL for ceiling
+            ramp_ceils[ramp_num] = MAX_LEVEL + 1 - value;
+        }
+        else if (3 == step) {
+            ramp_stepss[ramp_num] = value;
+        }
     }
 }
 
@@ -625,6 +628,8 @@ uint8_t nearest_level(int16_t target) {
     // ensure all globals are correct
     ramp_update_config();
 
+    uint8_t style_ramp = ramp_style;
+
     // bounds check
     uint8_t mode_min = ramp_floor;
     uint8_t mode_max = ramp_ceil;
@@ -634,14 +639,14 @@ uint8_t nearest_level(int16_t target) {
     #endif
         ];
     // special case for 1-step ramp... use halfway point between floor and ceiling
-    if (ramp_style && (1 == num_steps)) {
+    if (style_ramp && (1 == num_steps)) {
         uint8_t mid = (mode_max + mode_min) >> 1;
         return mid;
     }
     if (target < mode_min) return mode_min;
     if (target > mode_max) return mode_max;
     // the rest isn't relevant for smooth ramping
-    if (! ramp_style) return target;
+    if (! style_ramp) return target;
 
     uint8_t ramp_range = mode_max - mode_min;
     ramp_discrete_step_size = ramp_range / (num_steps-1);
@@ -659,13 +664,13 @@ uint8_t nearest_level(int16_t target) {
 
 // ensure ramp globals are correct
 void ramp_update_config() {
-    uint8_t which = ramp_style;
+    uint8_t ramp_num = ramp_style;
     #ifdef USE_SIMPLE_UI
-    if (simple_ui_active) { which = 2; }
+    if (simple_ui_active) { ramp_num = 2; }
     #endif
 
-    ramp_floor = ramp_floors[which];
-    ramp_ceil = ramp_ceils[which];
+    ramp_floor = ramp_floors[ramp_num];
+    ramp_ceil = ramp_ceils[ramp_num];
 }
 
 #ifdef USE_THERMAL_REGULATION
