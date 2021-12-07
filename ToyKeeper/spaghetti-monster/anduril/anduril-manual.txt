@@ -207,7 +207,7 @@ While the light is on, a few actions are available:
     - Item 2: Configure the manual memory timer.
               Sets the timer to N minutes, where N is the number of
               clicks.  A value of 0 (no clicks) turns the timer off.
-    - Item 3: Configure whether to ramp up after "Off -> 1H".
+    - Item 3: Configure whether to ramp up after "Off -> 1H" / "Lockout -> 4H".
               0: Ramp up after moon.
               1: Don't ramp up, just stay at the floor level.
     - Item 4: Configure Advanced UI's turbo style:
