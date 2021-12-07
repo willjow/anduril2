@@ -593,6 +593,17 @@ void globals_config_save(uint8_t step, uint8_t value) {
         // set tint to middle or edge depending on style being smooth or toggle
         tint = tint_style ? 1 : 127;
     }
+    else if (step == 1+tint_5c_level_config_step) {
+        if (value == 0) {
+            tint_5c_level = 127;
+        }
+        else if (value == 1) {
+            tint_5c_level = 254;
+        }
+        else {
+            tint_5c_level = 1;
+        }
+    }
     #endif
     #ifdef USE_JUMP_START
     else if (step == 1+jump_start_config_step) { jump_start_level = value; }

@@ -1,7 +1,5 @@
 Tasks to do...
 
-- (TODO) Add config option for tint shortcut (5C) to go to ch1, middle, or ch2
-
 - (TODO) Make 4H from lockout observe "ramp up after moon" setting
 
 - (TODO) Smooth voltage readings so aux leds on voltage setting don't oscillate

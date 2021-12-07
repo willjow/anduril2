@@ -235,6 +235,7 @@ uint8_t ramp_discrete_step_size;  // don't set this
 typedef enum {
     #ifdef USE_TINT_RAMPING
     tint_style_config_step,
+    tint_5c_level_config_step,
     #endif
     #ifdef USE_JUMP_START
     jump_start_config_step,

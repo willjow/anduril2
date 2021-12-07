@@ -185,7 +185,8 @@ While the light is on, a few actions are available:
 
   - 4C: Go to lockout mode.
 
-  - 5C: Go to momentary mode.
+  - 5C: Go to tint shortcut (on lights which have it).
+  - 5C: Go to momentary mode (on lights with no tint ramping).
   - 5H: Start a sunset timer.  Details are below in the Sunset Timer section.
 
   - 7H: Ramp config menu.
@@ -707,6 +708,11 @@ anywhere else.  These settings are, in order:
     0 = smooth (blend channels in any proportion)
     1 = toggle (only one channel active at a time)
 
+  - Tint 5C style:
+    0 = go to middle
+    1 = go to channel 1
+    2 = go to channel 2
+
   - Jump Start level:
 
     Some lights are prone to starting up slowly at low levels, so they
@@ -748,6 +754,10 @@ This can be smooth, allowing the user to smoothly blend both channels in
 whatever ratio they desire...  or it can be "tint toggle" style, where
 only one channel is active at a time.
 
+The misc config menu additionally has a setting to choose a style for the tint
+shortcut with 5C. This can be set to either go to channel 1, channel 2, or in
+the middle of the two.
+
 
 UI Reference Table
 ------------------
@@ -769,7 +779,8 @@ Off              Full    7C                Aux LEDs: Next pattern
 Off              Full    7H                Aux LEDs: Next color
 Off              Full    9H                Misc config menu (varies per light)
                                                 1: tint ramp config
-                                                2: jump start config
+                                                2: tint 5C config
+                                                3: jump start config
 Off              Full    10C               Enable Simple UI
 Off              Simple  10H               Disable Simple UI
 Off              Full    10H               Simple UI ramp config menu:
@@ -788,7 +799,8 @@ Ramp             Full    3C                Change ramp style (smooth / stepped)
 Ramp             Any     3H                Tint ramping (on some lights)
 Ramp             Full    3H                Momentary turbo (on lights without tint ramping)
 Ramp             Any     4C                Lockout mode
-Ramp             Full    5C                Momentary mode
+Ramp             Full    5C                Tint ramping shortcut (on some lights)
+Ramp             Full    5C                Momentary mode (on lights without tint ramping)
 Ramp             Full    5H                Sunset timer on, and add 5 minutes
 Ramp             Full    7H                Ramp config menu:
                                                 1: floor

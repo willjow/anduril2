@@ -28,6 +28,14 @@ uint8_t tint_style = 1;
 uint8_t tint_style = 0;
 #endif
 
+#ifndef DEFAULT_TINT_5C_LEVEL
+#define DEFAULT_TINT_5C_LEVEL 127
+#endif
+// 127: middle    (corresponds to menu input 0)
+// 254: channel 1 (corresponds to menu input 1)
+//   1: channel 2 (corresponds to menu input 2)
+uint8_t tint_5c_level = DEFAULT_TINT_5C_LEVEL;
+
 #ifdef USE_MANUAL_MEMORY
 uint8_t manual_memory_tint;
 #endif

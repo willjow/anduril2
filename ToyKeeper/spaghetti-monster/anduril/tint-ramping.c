@@ -128,10 +128,11 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 5 clicks: go to/from the middle tint
+    // 5 clicks: go to/from tint shortcut
     else if (event == EV_5clicks) {
-        if (tint != 127) {
-            tint = 127;
+        uint8_t level_5c = tint_5c_level;
+        if (tint != level_5c) {
+            tint = level_5c;
         }
         else {
             tint = prev_tint;
