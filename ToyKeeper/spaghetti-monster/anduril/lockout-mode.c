@@ -26,11 +26,46 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     #ifdef USE_MOON_DURING_LOCKOUT_MODE
     // momentary(ish) moon mode during lockout
     // button is being held
+
+    // 4 clicks, but hold last: exit and start at floor
+    // handle this up here so that we don't strobe between nearest_level(1) and
+    // the lowest floor while holding 4H
+    if (event == EV_click4_hold) {
+        if (arg == 0) blink_once();
+        set_level(nearest_level(1));
+        #ifdef USE_RAMP_AFTER_MOON_CONFIG
+        if (dont_ramp_after_moon) {
+            current_event = EV_none;
+            set_state(steady_state, 1);
+        }
+        // don't start ramping immediately;
+        // give the user time to release at moon level
+        else if (arg >= HOLD_TIMEOUT) {
+            current_event = EV_click1_hold;
+            set_state(steady_state, 1);
+        }
+        #else
+        // reset button sequence to avoid activating anything in ramp mode
+        current_event = EV_none;
+        // ... and back to ramp mode
+        set_state(steady_state, 1);
+        #endif
+        return MISCHIEF_MANAGED;
+    }
+    #ifdef USE_RAMP_AFTER_MOON_CONFIG
+    else if (event == EV_click4_hold_release) {
+        // in the case that we release before the ramp timeout, change state
+        // without ramping
+        current_event = EV_none;
+        set_state(steady_state, 1);
+        return MISCHIEF_MANAGED;
+    }
+    #endif
     #ifdef USE_AUX_RGB_LEDS
     // don't turn on during RGB aux LED configuration
-    if (event == EV_click7_hold) { set_level(0); } else
+    else if (event == EV_click7_hold) { set_level(0); }
     #endif
-    if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
+    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
         // hold: lowest floor
         // click, hold: highest floor (or manual mem level)
         uint8_t lvl = ramp_floors[0];
@@ -94,7 +129,6 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return MISCHIEF_MANAGED;
     }
     #endif
-
     // 4 clicks: exit and turn on
     else if (event == EV_4clicks) {
         #ifdef USE_MANUAL_MEMORY
@@ -105,38 +139,6 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         set_state(steady_state, memorized_level);
         return MISCHIEF_MANAGED;
     }
-    // 4 clicks, but hold last: exit and start at floor
-    else if (event == EV_click4_hold) {
-        if (arg == 0) blink_once();
-        set_level(nearest_level(1));
-        #ifdef USE_RAMP_AFTER_MOON_CONFIG
-        if (dont_ramp_after_moon) {
-            current_event = EV_none;
-            set_state(steady_state, 1);
-        }
-        // don't start ramping immediately;
-        // give the user time to release at moon level
-        else if (arg >= HOLD_TIMEOUT) {
-            current_event = EV_click1_hold;
-            set_state(steady_state, 1);
-        }
-        #else
-        // reset button sequence to avoid activating anything in ramp mode
-        current_event = EV_none;
-        // ... and back to ramp mode
-        set_state(steady_state, 1);
-        #endif
-        return MISCHIEF_MANAGED;
-    }
-    #ifdef USE_RAMP_AFTER_MOON_CONFIG
-    else if (event == EV_click4_hold_release) {
-        // in the case that we release before the ramp timeout, change state
-        // without ramping
-        current_event = EV_none;
-        set_state(steady_state, 1);
-        return MISCHIEF_MANAGED;
-    }
-    #endif
     // 5 clicks: exit and turn on at ceiling level
     else if (event == EV_5clicks) {
         set_state(steady_state, MAX_LEVEL);
