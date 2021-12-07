@@ -810,7 +810,7 @@ Ramp             Full    10C               Turn on manual memory and save curren
 Ramp             Full    10H               Ramp Extras config menu:
                                                 1: enable automatic mem
                                                 2: set manual mem timeout
-                                                3: ramp after moon or not
+                                                3: ramp after moon setting
                                                 4: advanced UI turbo style
                                                 5: 1H reversing behavior
 Lockout          Any     1C/1H             Momentary moon (lowest floor)
