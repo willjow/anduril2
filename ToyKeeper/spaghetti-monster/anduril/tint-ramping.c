@@ -123,8 +123,10 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         #else
         tint_ramp_direction = -tint_ramp_direction;
         #endif
+        #ifdef START_AT_MEMORIZED_TINT
         // remember tint after battery change
         save_config_wl();
+        #endif
         return EVENT_HANDLED;
     }
 
@@ -138,8 +140,10 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             tint = prev_tint;
         }
         set_level(actual_level);
+        #ifdef START_AT_MEMORIZED_TINT
         // remember tint after battery change
         save_config_wl();
+        #endif
         return EVENT_HANDLED;
     }
 

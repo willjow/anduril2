@@ -141,6 +141,9 @@
 // (currently incompatible with factory reset)
 //#define START_AT_MEMORIZED_LEVEL
 
+// persist tint after power is disconnected
+//#define START_AT_MEMORIZED_TINT
+
 
 ///// extra modes (enable / disable / configure each mode) /////
 

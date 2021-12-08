@@ -24,7 +24,7 @@
 void load_config();
 void save_config();
 #if defined(START_AT_MEMORIZED_LEVEL) \
-    || defined(USE_TINT_RAMPING)
+    || defined(START_AT_MEMORIZED_TINT)
 void save_config_wl();
 #endif
 

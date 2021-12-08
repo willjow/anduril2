@@ -103,14 +103,14 @@ typedef enum {
 #define EEPROM_BYTES eeprom_indexes_e_END
 
 #if defined(START_AT_MEMORIZED_LEVEL) \
-    || defined(USE_TINT_RAMPING)
+    || defined(START_AT_MEMORIZED_TINT)
 #define USE_EEPROM_WL
 typedef enum {
     #ifdef START_AT_MEMORIZED_LEVEL
     memorized_level_e,
     #endif
-    #ifdef USE_TINT_RAMPING
-    tint_e,
+    #ifdef START_AT_MEMORIZED_TINT
+    memorized_tint_e,
     #endif
     eeprom_wl_indexes_e_END
 } eeprom_wl_indexes_e;
