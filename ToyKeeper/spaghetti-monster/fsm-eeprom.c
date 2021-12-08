@@ -114,14 +114,15 @@ void save_eeprom_wl() {
     offset += EEPROM_WL_BYTES+1;
     if (offset > (uint8_t *)(EEP_WL_SIZE-EEPROM_WL_BYTES-1)) offset = 0;
     eep_wl_prev_offset = offset;
-    // marker byte
-    // FIXME: write the marker last, to signal completed transaction
-    eeprom_update_byte(offset, EEP_MARKER);
     offset ++;
     // user data
     for(uint8_t i=0; i<EEPROM_WL_BYTES; i++, offset++) {
         eeprom_update_byte(offset, eeprom_wl[i]);
     }
+
+    // marker byte
+    // write the marker last, to signal completed transaction
+    eeprom_update_byte(eep_wl_prev_offset, EEP_MARKER);
     sei();
 }
 #endif

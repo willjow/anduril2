@@ -23,7 +23,8 @@
 // remember stuff even after battery was changed
 void load_config();
 void save_config();
-#ifdef START_AT_MEMORIZED_LEVEL
+#if defined(START_AT_MEMORIZED_LEVEL) \
+    || defined(USE_TINT_RAMPING)
 void save_config_wl();
 #endif
 
