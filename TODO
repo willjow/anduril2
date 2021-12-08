@@ -3,6 +3,8 @@ Tasks to do...
 - (TODO) Smooth voltage readings so aux leds on voltage setting don't oscillate
   every ~9 secconds
 
+- (TODO) Fix blinking when adjusting tint?
+
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
 
