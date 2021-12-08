@@ -4,6 +4,8 @@ Tasks to do...
   every ~9 secconds
 
 - (TODO) Fix blinking when adjusting tint?
+    - appears to be correlated with whether we save_config/save_config_wl,
+      maybe this is related to having to cli() before writing eeprom
 
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
