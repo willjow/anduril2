@@ -3,9 +3,14 @@ Tasks to do...
 - (TODO) Smooth voltage readings so aux leds on voltage setting don't oscillate
   every ~9 secconds
 
+- (TODO) Add interface for turning on a second aux led setting
+    - maybe first momentary in lockout? anything else we would get a flash of
+      the main emitters beforehand which would kind of defeat its purpose as
+      a lower-than-moonlight mode
+
 - (TODO) Fix blinking when adjusting tint?
     - appears to be correlated with whether we save_config/save_config_wl,
-      maybe this is related to having to cli() before writing eeprom
+      maybe this is related to having to cli() before writing eeprom???
 
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
