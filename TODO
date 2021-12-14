@@ -2,6 +2,68 @@ Tasks to do...
 
 - (TODO) Smooth voltage readings so aux leds on voltage setting don't oscillate
   every ~9 secconds
+    Notes:
+        - standby() called when go_to_standby is true
+            - go_to_standby set by entering off_mode and remains 1 until
+              a button is pressed
+        - standby aka sleep_until_eswitch_pressed:
+            - (assume no buttons are pressed)
+            - TICK_DURING_STANDBY every 0.128 ms (vs every 16 ms regularly)
+            sets ADC_off()
+            while(go_to_standby)
+                1. initially wake up on first standby tick - call WDT_inner()
+                WDT_inner():
+                    emit sleep tick
+                    process_emissions()
+                        (notably: call rgb_led_update())
+                    if not on a multiple of 64 ticks: return
+                    else: adc_trigger = 0,
+                          ADC_on():
+                                set_admux_voltage():
+                                    adc_channel = 0
+                                    adc_sample_count = 0
+                                    ADC_start_measurement()
+                          ADC_start_measurement()
+                          adc_deferred_enable = 1
+
+                2. when ADC finishes conversion, ISR(ADC_vect):
+                    if not measurement:
+                        copy measurement into adc_raw, inc/dec adc_smooth
+
+                * (1, 2) occurs twice before any voltage handling happens
+                  first cycle should occur just after turning off
+                  second cycle should occur 64 ticks later (8.192 s)
+                  then:
+
+                3.
+                WDT_inner():
+                    adc_reset = 1
+                    adc_deferred_enable = 1
+                    adc_deferred()
+
+                adc_deferred():
+                    adc_deferred_enable = 0
+                    if (go_to_standby):
+                        ADC_off()
+                        adc_channel = 0
+                    ADC_voltage_handler():
+                        if (adc_reset)
+                            measurement = adc_raw[0];
+                            adc_smooth[0] = measurement;  // no lowpass while asleep
+                        }
+                        else measurement = adc_smooth[0];
+                        set voltage to converted ADC reading
+                    adc_reset--
+
+                * repeat entire cycle from beginning (right?)
+
+    - TK doesn't use adc_smooth value when sleeping because response is too
+      slow?
+        - e.g., turbo => voltage drop, then from off it would take too long for
+          this to increment back up to resting voltage?
+        - if we implement a moving average window, then we can also just reset
+          the window after entering off or lockout
+
 
 - (TODO) Add interface for turning on a second aux led setting
     - maybe first momentary in lockout? anything else we would get a flash of
