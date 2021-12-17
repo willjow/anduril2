@@ -50,6 +50,10 @@ void sleep_until_eswitch_pressed()
     irq_adc = 0;
     irq_wdt = 0;
     irq_pcint = 0;
+
+    // reset voltage lowpass
+    adc_reset = 1;
+
     while (go_to_standby) {
     #else
         go_to_standby = 0;
@@ -73,8 +77,7 @@ void sleep_until_eswitch_pressed()
             go_to_standby = 0;
         }
         if (irq_adc) {  // ADC done measuring
-            adc_reset = 1;  // don't lowpass while asleep
-            adc_deferred_enable = 1;
+            //adc_deferred_enable = 1;  // should already be 1
             adc_deferred();
             //ADC_off();  // takes care of itself
             //irq_adc = 0;  // takes care of itself

@@ -200,8 +200,8 @@ void WDT_inner() {
     #if defined(USE_LVP) || defined(USE_THERMAL_REGULATION)
     // enable the deferred ADC handler once in a while
     if (! adc_trigger) {
-        ADC_start_measurement();
         adc_deferred_enable = 1;
+        ADC_start_measurement();
     }
     // timing for the ADC handler is every 32 ticks (~2Hz)
     adc_trigger = (adc_trigger + 1) & 31;

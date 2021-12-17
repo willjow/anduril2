@@ -27,19 +27,22 @@ Tasks to do...
                           adc_deferred_enable = 1
 
                 2. when ADC finishes conversion, ISR(ADC_vect):
-                    if not measurement:
+                    if adc_sample_count:
                         copy measurement into adc_raw, inc/dec adc_smooth
+                        irq_adc = 1
+                    adc_sample_count = 1
 
                 * (1, 2) occurs twice before any voltage handling happens
-                  first cycle should occur just after turning off
-                  second cycle should occur 64 ticks later (8.192 s)
-                  then:
+                    - first cycle (throwaway due to no adc_sample_count) should
+                      occur just after turning off
+                    - second cycle should occur 64 ticks (8.192 s) later
+                    then:
 
                 3.
-                WDT_inner():
-                    adc_reset = 1
-                    adc_deferred_enable = 1
-                    adc_deferred()
+                irq_adc set to 1 by ISR(ADC_vect)
+                (adc_reset = 1)
+                adc_deferred_enable = 1 (should be set by WDT_inner?)
+                adc_deferred()
 
                 adc_deferred():
                     adc_deferred_enable = 0
