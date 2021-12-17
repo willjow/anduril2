@@ -204,5 +204,7 @@
 // while in "voltage" mode, enable this to reduce the amplitude of
 // those oscillations
 //#define USE_LOWPASS_WHILE_ASLEEP
+// always use adc_raw voltage while asleep
+//#define USE_ADC_RAW_WHILE_ASLEEP
 
 #endif
