@@ -127,7 +127,7 @@ inline void ADC_on()
         set_admux_voltage();
         VREF.CTRLA |= VREF_ADC0REFSEL_1V1_gc; // Set Vbg ref to 1.1V
         ADC0.CTRLA = ADC_ENABLE_bm | ADC_FREERUN_bm; // Enabled, free-running (aka, auto-retrigger)
-        ADC0.COMMAND |= ADC_STCONV_bm; // Start the ADC conversions    
+        ADC0.COMMAND |= ADC_STCONV_bm; // Start the ADC conversions
     #else
         #error Unrecognized MCU type
     #endif
@@ -135,7 +135,7 @@ inline void ADC_on()
 
 inline void ADC_off() {
     #ifdef AVRXMEGA3  // ATTINY816, 817, etc
-        ADC0.CTRLA &= ~(ADC_ENABLE_bm);  // disable the ADC 
+        ADC0.CTRLA &= ~(ADC_ENABLE_bm);  // disable the ADC
     #else
         ADCSRA &= ~(1<<ADEN); //ADC off
     #endif
@@ -183,7 +183,7 @@ ISR(ADC_vect) {
         // update the latest value
         #ifdef AVRXMEGA3  // ATTINY816, 817, etc
         // Use the factory calibrated values in SIGROW.TEMPSENSE0 and SIGROW.TEMPSENSE1
-        // to calculate a temperature reading in Kelvin, then left-align it. 
+        // to calculate a temperature reading in Kelvin, then left-align it.
         if (channel == 1) { // thermal, convert ADC reading to left-aligned Kelvin
             int8_t sigrow_offset = SIGROW.TEMPSENSE1; // Read signed value from signature row
             uint8_t sigrow_gain = SIGROW.TEMPSENSE0; // Read unsigned value from signature row
@@ -192,7 +192,7 @@ ISR(ADC_vect) {
             temp += 0x80; // Add 1/2 to get correct rounding on division below
             temp >>= 8; // Divide result to get Kelvin
             m = (temp << 6); // left align it
-        } 
+        }
         else { m = (ADC0.RES << 6); } // voltage, force left-alignment
 
         #else
@@ -303,14 +303,11 @@ static inline void ADC_voltage_handler() {
     if (button_last_state) return;
     #endif
 
-    uint16_t measurement;
-
     // latest ADC value
     if (adc_reset) {  // while asleep, or just after waking, don't lowpass
-        measurement = adc_raw[0];
-        adc_smooth[0] = measurement;  // no lowpass while asleep
+        adc_smooth[0] = adc_raw[0];  // no lowpass while asleep
     }
-    else measurement = adc_smooth[0];
+    uint16_t measurement = adc_smooth[0];
 
     // values stair-step between intervals of 64, with random variations
     // of 1 or 2 in either direction, so if we chop off the last 6 bits
@@ -385,12 +382,12 @@ static inline void ADC_temperature_handler() {
 
     if (adc_reset) {  // wipe out old data
         // ignore average, use latest sample
-        uint16_t foo = adc_raw[1];
-        adc_smooth[1] = foo;
+        adc_smooth[1] = adc_raw[1];
 
         // forget any past measurements
+        uint16_t t = (adc_smooth[1] + 16) >> 5;
         for(uint8_t i=0; i<NUM_TEMP_HISTORY_STEPS; i++)
-            temperature_history[i] = (foo + 16) >> 5;
+            temperature_history[i] = t;
     }
 
     // latest 16-bit ADC reading
