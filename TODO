@@ -76,6 +76,11 @@ Tasks to do...
 - (TODO) Fix blinking when adjusting tint?
     - appears to be correlated with whether we save_config/save_config_wl,
       maybe this is related to having to cli() before writing eeprom???
+    - in revision 642, ToyKeeper mentions bug with brightness changing after
+      releasing here
+        - sounds like a different problem tbh but we could see if calling
+          set_level after save_config changes anything
+        - or both before and after? lol true spaghett
 
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
