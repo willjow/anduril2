@@ -128,20 +128,15 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return MISCHIEF_MANAGED;
     }
     #endif
-    // 4 clicks: exit and turn on/off
+    // 4 clicks: exit and turn on
     else if (event == EV_4clicks) {
-        if (unlock_style) {
-            blink_once();
-            set_state(off_state, 0);
-        } else {
-            #ifdef USE_MANUAL_MEMORY
-            // FIXME: memory timer is totally ignored
-            if (manual_memory)
-                set_state(steady_state, manual_memory);
-            else
-            #endif
-            set_state(steady_state, memorized_level);
-        }
+        #ifdef USE_MANUAL_MEMORY
+        // FIXME: memory timer is totally ignored
+        if (manual_memory)
+            set_state(steady_state, manual_memory);
+        else
+        #endif
+        set_state(steady_state, memorized_level);
         return MISCHIEF_MANAGED;
     }
 
@@ -220,27 +215,18 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     return EVENT_NOT_HANDLED;
 }
 
+#ifdef USE_AUTOLOCK
 void lockout_config_save(uint8_t step, uint8_t value) {
-    #ifndef USE_AUTOLOCK
-    step++;
-    #endif
     if (1 == step) {
         // set the auto-lock timer to N minutes, where N is the number of clicks
         autolock_time = value;
     }
-    else if (2 == step) {
-        unlock_style = value;
-    }
 }
 
 uint8_t lockout_config_state(Event event, uint16_t arg) {
-    #ifdef USE_AUTOLOCK
-    const uint8_t num_config_steps = 2;
-    #else
-    const uint8_t num_config_steps = 1;
-    #endif
-    return config_state_base(event, arg, num_config_steps, lockout_config_save);
+    return config_state_base(event, arg, 1, lockout_config_save);
 }
+#endif
 
 
 #endif

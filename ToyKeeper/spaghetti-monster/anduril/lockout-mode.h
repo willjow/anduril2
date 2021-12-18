@@ -28,13 +28,7 @@ uint8_t lockout_state(Event event, uint16_t arg);
 #define DEFAULT_AUTOLOCK_TIME 0 // autolock time in minutes, 0 = disabled
 #endif
 uint8_t autolock_time = DEFAULT_AUTOLOCK_TIME;
-#endif
-
-#ifndef DEFAULT_UNLOCK_STYE
-#define DEFAULT_UNLOCK_STYE 0 // 0 = 4C to ramp mode, 1 = 4C to off
-#endif
-uint8_t unlock_style = DEFAULT_UNLOCK_STYE;
-
 uint8_t lockout_config_state(Event event, uint16_t arg);
+#endif
 
 #endif
