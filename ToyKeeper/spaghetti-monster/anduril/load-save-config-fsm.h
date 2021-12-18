@@ -98,6 +98,7 @@ typedef enum {
     #ifdef USE_AUTOLOCK
     autolock_time_e,
     #endif
+    unlock_style_e,
     eeprom_indexes_e_END
 } eeprom_indexes_e;
 #define EEPROM_BYTES eeprom_indexes_e_END

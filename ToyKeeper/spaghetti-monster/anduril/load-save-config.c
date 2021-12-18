@@ -98,6 +98,7 @@ void load_config() {
         #ifdef USE_AUTOLOCK
         autolock_time = eeprom[autolock_time_e];
         #endif
+        unlock_style = eeprom[unlock_style_e];
     }
     #if defined(START_AT_MEMORIZED_LEVEL) \
         || defined(START_AT_MEMORIZED_TINT)
@@ -186,6 +187,7 @@ void save_config() {
     #ifdef USE_AUTOLOCK
     eeprom[autolock_time_e] = autolock_time;
     #endif
+    eeprom[unlock_style_e] = unlock_style;
 
     save_eeprom();
 }

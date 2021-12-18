@@ -122,30 +122,29 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return MISCHIEF_MANAGED;
     }
     #endif
-
     #ifdef USE_TINT_RAMPING
     // disable tint ramping during lockout
     else if (event == EV_click3_hold) {
         return MISCHIEF_MANAGED;
     }
     #endif
-    // 3 clicks: exit and turn off
-    else if (event == EV_3clicks) {
-        blink_once();
-        set_state(off_state, 0);
-        return MISCHIEF_MANAGED;
-    }
-    // 4 clicks: exit and turn on
+    // 4 clicks: exit and turn on/off
     else if (event == EV_4clicks) {
-        #ifdef USE_MANUAL_MEMORY
-        // FIXME: memory timer is totally ignored
-        if (manual_memory)
-            set_state(steady_state, manual_memory);
-        else
-        #endif
-        set_state(steady_state, memorized_level);
+        if (unlock_style) {
+            blink_once();
+            set_state(off_state, 0);
+        } else {
+            #ifdef USE_MANUAL_MEMORY
+            // FIXME: memory timer is totally ignored
+            if (manual_memory)
+                set_state(steady_state, manual_memory);
+            else
+            #endif
+            set_state(steady_state, memorized_level);
+        }
         return MISCHIEF_MANAGED;
     }
+
     // 5 clicks: exit and turn on at ceiling level
     else if (event == EV_5clicks) {
         set_state(steady_state, MAX_LEVEL);
@@ -162,7 +161,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     #ifdef USE_AUTOLOCK
     // 10H: configure the autolock option
     else if (event == EV_click10_hold) {
-        push_state(autolock_config_state, 0);
+        push_state(lockout_config_state, 0);
         return MISCHIEF_MANAGED;
     }
     #endif
@@ -221,16 +220,27 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     return EVENT_NOT_HANDLED;
 }
 
-#ifdef USE_AUTOLOCK
-// set the auto-lock timer to N minutes, where N is the number of clicks
-void autolock_config_save(uint8_t step, uint8_t value) {
-    autolock_time = value;
+void lockout_config_save(uint8_t step, uint8_t value) {
+    #ifndef USE_AUTOLOCK
+    step++;
+    #endif
+    if (1 == step) {
+        // set the auto-lock timer to N minutes, where N is the number of clicks
+        autolock_time = value;
+    }
+    else if (2 == step) {
+        unlock_style = value;
+    }
 }
 
-uint8_t autolock_config_state(Event event, uint16_t arg) {
-    return config_state_base(event, arg, 1, autolock_config_save);
+uint8_t lockout_config_state(Event event, uint16_t arg) {
+    #ifdef USE_AUTOLOCK
+    const uint8_t num_config_steps = 2;
+    #else
+    const uint8_t num_config_steps = 1;
+    #endif
+    return config_state_base(event, arg, num_config_steps, lockout_config_save);
 }
-#endif  // #ifdef USE_AUTOLOCK
 
 
 #endif
