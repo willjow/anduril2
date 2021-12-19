@@ -94,7 +94,7 @@ void rgb_led_update(uint8_t mode, uint8_t arg) {
     uint8_t color = mode & 0x0f;
 
     // preview in blinking mode is awkward... use high instead
-    if (! go_to_standby) {
+    if (setting_rgb_mode_now) {
         if (pattern == 4) pattern = 1;
         else if (pattern > 2) pattern = 2;
     }
