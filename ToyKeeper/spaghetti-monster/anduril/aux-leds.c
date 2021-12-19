@@ -94,8 +94,10 @@ void rgb_led_update(uint8_t mode, uint8_t arg) {
     uint8_t color = mode & 0x0f;
 
     // preview in blinking mode is awkward... use high instead
-    if ((! go_to_standby) && (pattern == 3)) { pattern = 2; }
-
+    if (! go_to_standby) {
+        if (pattern == 4) pattern = 1;
+        else if (pattern > 2) pattern = 2;
+    }
 
     const uint8_t *colors = rgb_led_colors;
     uint8_t actual_color = 0;
