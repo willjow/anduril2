@@ -27,6 +27,12 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     // momentary(ish) moon mode during lockout
     // button is being held
 
+    #ifdef USE_AUX_RGB_LEDS
+    uint8_t aux_mode = rgb_led_lockout_mode;
+    uint8_t aux_pattern = aux_mode >> 4;
+    uint8_t aux_color = aux_mode & 0x0f;
+    #endif
+
     // 4 clicks, but hold last: exit and start at floor
     // handle this up here so that we don't strobe between nearest_level(1) and
     // the lowest floor while holding 4H
@@ -68,20 +74,42 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
         // hold: lowest floor
         // click, hold: highest floor (or manual mem level)
-        uint8_t lvl = ramp_floors[0];
-        if ((event & 0x0f) == 2) {  // second click
-            if (ramp_floors[1] > lvl) lvl = ramp_floors[1];
-            #ifdef USE_MANUAL_MEMORY
-            if (manual_memory) lvl = manual_memory;
-            #endif
-        } else {  // anything except second click
-            if (ramp_floors[1] < lvl) lvl = ramp_floors[1];
+        uint8_t min_floor = ramp_floors[0];
+        uint8_t max_floor = ramp_floors[1];
+        if (min_floor > max_floor) {
+            uint8_t temp = min_floor;
+            min_floor = max_floor;
+            max_floor = temp;
         }
-        set_level(lvl);
+
+        if ((event & 0x0f) == 2) {  // second click
+            #ifdef USE_MANUAL_MEMORY
+            if (manual_memory) {
+                set_level(manual_memory);
+            } else
+            #endif
+            {
+                #ifdef USE_AUX_RGB_LEDS
+                if (aux_pattern == 4 || aux_pattern == 5) {
+                    set_level(min_floor);
+                } else
+                #endif
+                { set_level(max_floor); }
+            }
+        } else {  // anything except second click
+            #ifdef USE_AUX_RGB_LEDS
+            if (aux_pattern == 4 || aux_pattern == 5) {  // momentary low/high aux
+                uint8_t actual_color = pgm_read_byte(rgb_led_colors + aux_color);
+                actual_color = actual_color << (aux_pattern - 4);  // set level
+                rgb_led_set(actual_color);
+            } else
+            #endif
+            { set_level(min_floor); }
+        }
     }
     // button was released
     else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
-        set_level(0);
+        set_level(0);  // should also turn off aux leds
     }
     #endif  // ifdef USE_MOON_DURING_LOCKOUT_MODE
 
@@ -96,7 +124,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     } else
     #elif defined(USE_AUX_RGB_LEDS)
     if (event == EV_enter_state) {
-        rgb_led_update(rgb_led_lockout_mode, 0);
+        rgb_led_update(aux_mode, 0);
     } else
     #endif
     if (event == EV_tick) {
@@ -105,7 +133,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
             #ifdef USE_INDICATOR_LED
             indicator_led(indicator_led_mode >> 2);
             #elif defined(USE_AUX_RGB_LEDS)
-            rgb_led_update(rgb_led_lockout_mode, arg);
+            rgb_led_update(aux_mode, arg);
             #endif
         }
         return MISCHIEF_MANAGED;
@@ -117,7 +145,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
             indicator_blink(arg);
         }
         #elif defined(USE_AUX_RGB_LEDS)
-        rgb_led_update(rgb_led_lockout_mode, arg);
+        rgb_led_update(aux_mode, arg);
         #endif
         return MISCHIEF_MANAGED;
     }
@@ -184,9 +212,8 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     #elif defined(USE_AUX_RGB_LEDS)
     // 7 clicks: change RGB aux LED pattern
     else if (event == EV_7clicks) {
-        uint8_t mode = (rgb_led_lockout_mode >> 4) + 1;
-        mode = mode % RGB_LED_NUM_PATTERNS;
-        rgb_led_lockout_mode = (mode << 4) | (rgb_led_lockout_mode & 0x0f);
+        uint8_t pattern = (aux_pattern + 1) % RGB_LED_LOCKOUT_NUM_PATTERNS;
+        rgb_led_lockout_mode = (pattern << 4) | aux_color;
         rgb_led_update(rgb_led_lockout_mode, 0);
         save_config();
         blink_once();
@@ -196,9 +223,8 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     else if (event == EV_click7_hold) {
         setting_rgb_mode_now = 1;
         if (0 == (arg & 0x3f)) {
-            uint8_t mode = (rgb_led_lockout_mode & 0x0f) + 1;
-            mode = mode % RGB_LED_NUM_COLORS;
-            rgb_led_lockout_mode = mode | (rgb_led_lockout_mode & 0xf0);
+            uint8_t color = (aux_color + 1) % RGB_LED_NUM_COLORS;
+            rgb_led_lockout_mode = (aux_mode & 0xf0) | color;
             //save_config();
         }
         rgb_led_update(rgb_led_lockout_mode, arg);

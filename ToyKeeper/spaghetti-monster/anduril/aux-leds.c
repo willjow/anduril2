@@ -151,6 +151,8 @@ void rgb_led_update(uint8_t mode, uint8_t arg) {
     uint8_t button_led_result;
     #endif
     switch (pattern) {
+        case 4:  // momentary low (lockout only)
+        case 5:  // momentary high (lockout only)
         case 0:  // off
             result = 0;
             #ifdef USE_BUTTON_LED
