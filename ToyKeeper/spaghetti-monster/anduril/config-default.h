@@ -53,6 +53,8 @@
 
 // Include a simplified UI for non-enthusiasts?
 #define USE_SIMPLE_UI
+// disable simplified UI by default
+//#define SIMPLE_UI_ACTIVE 0
 
 
 ///// Ramp mode options /////
