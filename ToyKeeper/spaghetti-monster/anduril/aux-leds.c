@@ -94,7 +94,7 @@ void rgb_led_update(uint8_t mode, uint8_t arg) {
     uint8_t color = mode & 0x0f;
 
     // preview in blinking mode is awkward... use high instead
-    if ((! go_to_standby) && (pattern > 2)) { pattern = 2; }
+    if ((! go_to_standby) && (pattern == 3)) { pattern = 2; }
 
 
     const uint8_t *colors = rgb_led_colors;
@@ -151,8 +151,8 @@ void rgb_led_update(uint8_t mode, uint8_t arg) {
     uint8_t button_led_result;
     #endif
     switch (pattern) {
-        case 4:  // momentary low (lockout only)
-        case 5:  // momentary high (lockout only)
+        case 4:  // (lockout momentary low)
+        case 5:  // (lockout momentary high)
         case 0:  // off
             result = 0;
             #ifdef USE_BUTTON_LED
