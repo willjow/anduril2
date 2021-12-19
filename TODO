@@ -12,6 +12,11 @@ Tasks to do...
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
 
+- (TODO?) If it turns out that the SMA_2 filter doesn't really work for the
+  oscillating voltage aux leds, it'll probably be tricky to implement an
+  efficient conventional filter that reliably works. Perhaps we can just
+  implement a cycle detector and explicitly prevent cycles instead.
+
 - (DONE) To help people navigate this repository, it would be helpful to either
   re-organize the firmwares by hardware type (switch type, MCU, OTC,
   etc) or somehow tag each of them with relevant hardware requirements.
