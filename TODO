@@ -9,13 +9,23 @@ Tasks to do...
           set_level after save_config changes anything
         - or both before and after? lol true spaghett
 
+- (TODO) The moving average voltage filter seems to work relatively well, but
+  there's still an observable interval in which the leds will oscillate between
+  blue and green+blue. OTOH, running the light on turbo for ~15s appeared to
+  push the voltage out of this interval so maybe the filter can be considered
+  good enough.
+    - to improve, perhaps we can implement an smoothing algorithm that captures
+      some notion of inertia?
+    - explicitly disallowing the voltage reading to increase after detecting
+      a cycle doesn't seem like a very clean way to handle this...
+        - what happens if the voltage is actually increasing in the case that
+          the light has onboard charging?
+        - on the other hand this might be necessary if the cycles are in fact
+          caused by the voltage drop from the aux leds and not just noise... in
+          which case the voltage is truly oscillating
+
 - (TODO) Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
-
-- (TODO?) If it turns out that the SMA_2 filter doesn't really work for the
-  oscillating voltage aux leds, it'll probably be tricky to implement an
-  efficient conventional filter that reliably works. Perhaps we can just
-  implement a cycle detector and explicitly prevent cycles instead.
 
 - (DONE) To help people navigate this repository, it would be helpful to either
   re-organize the firmwares by hardware type (switch type, MCU, OTC,
