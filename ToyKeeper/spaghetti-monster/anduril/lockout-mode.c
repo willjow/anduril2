@@ -89,7 +89,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
             } else
             #endif
             {
-                #ifdef USE_AUX_RGB_LEDS
+                #ifdef USE_MOMENTARY_LOCKOUT_RGB_LED
                 if (aux_pattern == 4 || aux_pattern == 5) {
                     set_level(min_floor);
                 } else
@@ -97,7 +97,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
                 { set_level(max_floor); }
             }
         } else {  // anything except second click
-            #ifdef USE_AUX_RGB_LEDS
+            #ifdef USE_MOMENTARY_LOCKOUT_RGB_LED
             if (aux_pattern == 4 || aux_pattern == 5) {  // momentary low/high aux
                 uint8_t actual_color = pgm_read_byte(rgb_led_colors + aux_color);
                 actual_color = actual_color << (aux_pattern - 4);  // set level

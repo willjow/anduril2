@@ -209,4 +209,7 @@
 // always use adc_raw voltage while asleep
 //#define USE_ADC_RAW_WHILE_ASLEEP
 
+// enable momentary lockout aux leds
+//#define USE_MOMENTARY_LOCKOUT_RGB_LED
+
 #endif

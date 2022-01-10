@@ -51,7 +51,11 @@ const PROGMEM uint8_t rgb_led_colors[] = {
 // (at Hank's request)
 #define RGB_LED_NUM_COLORS 11
 #define RGB_LED_NUM_PATTERNS 4
-#define RGB_LED_LOCKOUT_NUM_PATTERNS 6 /// two extra patterns for momentary low/high
+#ifdef USE_MOMENTARY_LOCKOUT_RGB_LED
+#define RGB_LED_LOCKOUT_NUM_PATTERNS 6 // two extra patterns for momentary low/high
+#else
+#define RGB_LED_LOCKOUT_NUM_PATTERNS RGB_LED_NUM_PATTERNS
+#endif
 #ifndef RGB_LED_OFF_DEFAULT
 #define RGB_LED_OFF_DEFAULT 0x19  // low, voltage
 //#define RGB_LED_OFF_DEFAULT 0x18  // low, rainbow
