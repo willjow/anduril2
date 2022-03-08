@@ -1,6 +1,35 @@
 Tasks to do...
 
-- (TODO) Fix blinking when adjusting tint?
+
+- TODO(willjow)
+  Add configuration menu for disabling manual memory in lockout. If manual
+  memory isn't a low level, exiting lockout can be irritating for users who
+  don't intend to use lockout momentaries for anything other than moonlight.
+
+
+- TODO(willjow)
+  Replace current "tint shortcut" UI with a stepped mode similar to the stepped
+  mode for output ramping.
+    - retain 3H/4H to tint ramp, change 5C to toggle stepped/smooth mode
+      (basically same UI as output ramping, but with 2 more clicks)
+    - replace both the "tint ramp config" and "tint 5C config" menus with the
+      stepped/smooth tint toggle menu
+        - UI: number of clicks is the number of steps; e.g.
+              0C: smooth
+              1C: middle only
+              2C: ch 1, ch 2
+              3C: ch 1, mid, ch2
+              .
+              :
+        - notice that 2C here makes the "tint ramp config" redundant
+        - 1C/3C here is acceptably close to the current "tint 5C config"
+          functionality
+    - it would probably not be very useful to be able to set a tint
+      floor/ceiling, so this should be enough
+
+
+- TODO(willjow)
+  Fix blinking when adjusting tint?
     - appears to be correlated with whether we save_config/save_config_wl,
       maybe this is related to having to cli() before writing eeprom???
     - in revision 642, ToyKeeper mentions bug with brightness changing after
@@ -9,7 +38,9 @@ Tasks to do...
           set_level after save_config changes anything
         - or both before and after? lol true spaghett
 
-- (TODO) The moving average voltage filter seems to work relatively well, but
+
+- TODO(willjow)
+  The moving average voltage filter seems to work relatively well, but
   there's still an observable interval in which the leds will oscillate between
   blue and green+blue. OTOH, running the light on turbo for ~15s appeared to
   push the voltage out of this interval so maybe the filter can be considered
@@ -24,12 +55,16 @@ Tasks to do...
           caused by the voltage drop from the aux leds and not just noise... in
           which case the voltage is truly oscillating
 
-- (TODO) Add option to set button led modes independently from aux leds (8C?)
+
+- TODO(willjow)
+  Add option to set button led modes independently from aux leds (8C?)
     - (follow aux, off, low, high)
+
 
 - (DONE) To help people navigate this repository, it would be helpful to either
   re-organize the firmwares by hardware type (switch type, MCU, OTC,
   etc) or somehow tag each of them with relevant hardware requirements.
+
 
 - (DONE) Similarly, it would be helpful to tag each firmware with its overall
   purpose and/or style.
