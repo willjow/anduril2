@@ -83,7 +83,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         }
 
         if ((event & 0x0f) == 2) {  // second click
-            #ifdef USE_MANUAL_MEMORY
+            #if defined(USE_MANUAL_MEMORY) && defined(USE_MANUAL_MEMORY_DURING_LOCKOUT)
             if (manual_memory) {
                 set_level(manual_memory);
             } else

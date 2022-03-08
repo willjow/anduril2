@@ -2,12 +2,6 @@ Tasks to do...
 
 
 - TODO(willjow)
-  Add configuration menu for disabling manual memory in lockout. If manual
-  memory isn't a low level, exiting lockout can be irritating for users who
-  don't intend to use lockout momentaries for anything other than moonlight.
-
-
-- TODO(willjow)
   Replace current "tint shortcut" UI with a stepped mode similar to the stepped
   mode for output ramping.
     - retain 3H/4H to tint ramp, change 5C to toggle stepped/smooth mode

@@ -189,6 +189,8 @@
 #define USE_MOON_DURING_LOCKOUT_MODE
 // add an optional setting to lock the light after being off for a while
 #define USE_AUTOLOCK
+// enable momentary manual memory in lockout
+#define USE_MANUAL_MEMORY_DURING_LOCKOUT
 
 // enable momentary mode
 #define USE_MOMENTARY_MODE
