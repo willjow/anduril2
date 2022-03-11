@@ -147,6 +147,7 @@ uint8_t number_entry_state(Event event, uint16_t arg) {
     }
 
     // count clicks: click = +1, hold = +10
+    // FIXME(willjow): ideally we prevent this from wrapping
     else if ((event == EV_click1_release)
             #ifdef USE_NUMBER_ENTRY_PLUS10
             || (event == EV_click1_hold_release)

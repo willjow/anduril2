@@ -513,11 +513,14 @@ void ramp_config_save(uint8_t step, uint8_t value) {
     // save adjusted value to the correct slot
     if (value) {
         if (1 == step) {
-            ramp_floors[ramp_num] = value;
+            if (value <= ramp_ceils[ramp_num])
+                ramp_floors[ramp_num] = value;
         }
         else if (2 == step) {
             // subtract from MAX_LEVEL for ceiling
-            ramp_ceils[ramp_num] = MAX_LEVEL + 1 - value;
+            value = MAX_LEVEL + 1 - value;
+            if (value <= MAX_LEVEL && value >= ramp_floors[ramp_num])
+                ramp_ceils[ramp_num] = value;
         }
         else if (3 == step) {
             ramp_stepss[ramp_num] = value;
@@ -630,7 +633,6 @@ uint8_t globals_config_state(Event event, uint16_t arg) {
 
 uint8_t nearest_ramp_level(int16_t target) {
     uint8_t style_ramp = ramp_style;
-    // bounds check
     uint8_t floor;
     uint8_t ceil;
     uint8_t steps;

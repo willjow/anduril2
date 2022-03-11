@@ -79,8 +79,8 @@ uint8_t nearest_level(int16_t target, uint8_t floor, uint8_t ceil, uint8_t steps
     if (1 == steps)
         return (ceil + floor) >> 1;
 
-    if (target <= floor) return floor;
     if (target >= ceil) return ceil;
+    if (target <= floor) return floor;
     if (!steps) return target;
 
     #if defined(USE_CLOSED_FORM_NEAREST_LEVEL)
