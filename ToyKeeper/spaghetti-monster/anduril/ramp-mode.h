@@ -137,10 +137,7 @@ uint8_t ramp_extras_config_state(Event event, uint16_t arg);
 // calculate the nearest ramp level which would be valid at the moment
 // (is a no-op for smooth ramp, but limits discrete ramp to only the
 // correct levels for the user's config)
-uint8_t nearest_level(int16_t target);
-
-// ensure ramp globals are correct
-void ramp_update_config();
+uint8_t nearest_ramp_level(int16_t target);
 
 #ifdef USE_THERMAL_REGULATION
 // brightness before thermal step-down
@@ -204,9 +201,6 @@ uint8_t ramp_1h_style = DEFAULT_1H_STYLE;  // 0 = enable reversing, 1 = always r
 uint8_t dont_ramp_after_moon = DEFAULT_DONT_RAMP_AFTER_MOON;
 #endif
 
-// current values, regardless of style
-uint8_t ramp_floor = RAMP_SMOOTH_FLOOR;
-uint8_t ramp_ceil = RAMP_SMOOTH_CEIL;
 // per style
 uint8_t ramp_floors[] = {
     RAMP_SMOOTH_FLOOR,
@@ -229,7 +223,6 @@ uint8_t ramp_stepss[] = {
     SIMPLE_UI_STEPS,
     #endif
     };
-uint8_t ramp_discrete_step_size;  // don't set this
 
 #ifdef USE_GLOBALS_CONFIG
 typedef enum {

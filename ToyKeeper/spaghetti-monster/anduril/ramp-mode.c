@@ -34,17 +34,21 @@ uint8_t steady_state(Event event, uint16_t arg) {
     static uint8_t level_before_off = 0;
     #endif
 
-    // make sure ramp globals are correct...
-    // ... but they already are; no need to do it here
-    //ramp_update_config();
-    //nearest_level(1);  // same effect, takes less space
-
     uint8_t style_ramp = ramp_style;
-    uint8_t mode_min = ramp_floor;
-    uint8_t mode_max = ramp_ceil;
+    uint8_t mode_min = ramp_floors[style_ramp];
+    uint8_t mode_max = ramp_ceils[style_ramp];
     uint8_t step_size;
-    if (style_ramp) { step_size = ramp_discrete_step_size; }
-    else { step_size = 1; }
+    if (style_ramp) {
+        #ifdef USE_SIMPLE_UI
+        uint8_t steps = ramp_stepss[1 + simple_ui_active];
+        #else
+        uint8_t steps = ramp_stepss[1];
+        #endif
+        step_size = (mode_max - mode_min) / (steps - 1);
+    }
+    else {
+        step_size = 1;
+    }
 
     // how bright is "turbo"?
     uint8_t turbo_level;
@@ -117,7 +121,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         if ((arg > mode_min) && (arg < mode_max))
             memorized_level = arg;
         // use the requested level even if not memorized
-        arg = nearest_level(arg);
+        arg = nearest_ramp_level(arg);
         set_level_and_therm_target(arg);
         ramp_direction = 1;
         return MISCHIEF_MANAGED;
@@ -226,7 +230,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
             set_state(lockout_state, 0);
         }
         #endif
-        memorized_level = nearest_level((int16_t)actual_level \
+        memorized_level = nearest_ramp_level((int16_t)actual_level \
                           + (step_size * ramp_direction));
         #if defined(BLINK_AT_RAMP_MIDDLE) \
             || defined(BLINK_AT_RAMP_CEIL) \
@@ -252,7 +256,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         #endif
         #if defined(BLINK_AT_STEPS)
         ramp_style = 1;
-        uint8_t nearest = nearest_level((int16_t)actual_level);
+        uint8_t nearest = nearest_ramp_level((int16_t)actual_level);
         ramp_style = style_ramp;
         // only blink once for each threshold
         if ((memorized_level != actual_level) &&
@@ -413,7 +417,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         save_config_wl();
         #endif
         blip();
-        memorized_level = nearest_level(actual_level);
+        memorized_level = nearest_ramp_level(actual_level);
         set_level_and_therm_target(memorized_level);
         #ifdef USE_SUNSET_TIMER
         timer_orig_level = actual_level;
@@ -624,58 +628,27 @@ uint8_t globals_config_state(Event event, uint16_t arg) {
 }
 #endif
 
-// find the ramp level closest to the target,
-// using only the levels which are allowed in the current state
-uint8_t nearest_level(int16_t target) {
-    // using int16_t here saves us a bunch of logic elsewhere,
-    // by allowing us to correct for numbers < 0 or > 255 in one central place
-
-    // ensure all globals are correct
-    ramp_update_config();
-
+uint8_t nearest_ramp_level(int16_t target) {
     uint8_t style_ramp = ramp_style;
-
     // bounds check
-    uint8_t mode_min = ramp_floor;
-    uint8_t mode_max = ramp_ceil;
-    uint8_t num_steps = ramp_stepss[1
+    uint8_t floor;
+    uint8_t ceil;
+    uint8_t steps;
     #ifdef USE_SIMPLE_UI
-        + simple_ui_active
+    if (simple_ui_active) {
+        floor = ramp_floors[2];
+        ceil = ramp_ceils[2];
+        steps = ramp_stepss[2];
+    }
+    else {
     #endif
-        ];
-    // special case for 1-step ramp... use halfway point between floor and ceiling
-    if (style_ramp && (1 == num_steps)) {
-        uint8_t mid = (mode_max + mode_min) >> 1;
-        return mid;
-    }
-    if (target < mode_min) return mode_min;
-    if (target > mode_max) return mode_max;
-    // the rest isn't relevant for smooth ramping
-    if (! style_ramp) return target;
-
-    uint8_t ramp_range = mode_max - mode_min;
-    ramp_discrete_step_size = ramp_range / (num_steps-1);
-    uint8_t this_level = mode_min;
-
-    for(uint8_t i=0; i<num_steps; i++) {
-        this_level = mode_min + (i * (uint16_t)ramp_range / (num_steps-1));
-        int16_t diff = target - this_level;
-        if (diff < 0) diff = -diff;
-        if (diff <= (ramp_discrete_step_size>>1))
-            return this_level;
-    }
-    return this_level;
-}
-
-// ensure ramp globals are correct
-void ramp_update_config() {
-    uint8_t ramp_num = ramp_style;
+        floor = ramp_floors[style_ramp];
+        ceil = ramp_ceils[style_ramp];
+        steps = ramp_stepss[1] * style_ramp;  // 0 for smooth ramping
     #ifdef USE_SIMPLE_UI
-    if (simple_ui_active) { ramp_num = 2; }
+    }
     #endif
-
-    ramp_floor = ramp_floors[ramp_num];
-    ramp_ceil = ramp_ceils[ramp_num];
+    return nearest_level(target, floor, ceil, steps);
 }
 
 #ifdef USE_THERMAL_REGULATION

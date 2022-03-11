@@ -62,6 +62,78 @@ void blip() {
     set_level(temp);
 }
 
+#ifdef USE_CLOSED_FORM_NEAREST_LEVEL
+float fmod(float a, float b) {
+    return a - (uint8_t)(a / b) * b;
+}
+#endif
+
+// find the ramp level closest to the target,
+// using only the allowed levels (steps between floor and ceil inclusive)
+// steps = 0 corresponds to smooth ramping
+uint8_t nearest_level(int16_t target, uint8_t floor, uint8_t ceil, uint8_t steps) {
+    // using int16_t here saves us a bunch of logic elsewhere,
+    // by allowing us to correct for numbers < 0 or > 255 in one central place
+
+    // special case for 1-step ramp... use halfway point between floor and ceiling
+    if (1 == steps)
+        return (ceil + floor) >> 1;
+
+    if (target <= floor) return floor;
+    if (target >= ceil) return ceil;
+    if (!steps) return target;
+
+    #if defined(USE_CLOSED_FORM_NEAREST_LEVEL)
+    // ATtiny has no fpu, so we should avoid using float
+    // (as nice as it would be to have a closed-form solution...)
+    // this should also be the most accurate solution because we aren't
+    // truncating
+    float step_size = (float)(ceil - floor) / (steps - 1);
+    float mod = fmod(target - floor, step_size);
+    if ((2 * mod) > step_size)
+        return target + (step_size - mod);
+    return target - mod;
+
+    #elif defined(USE_LINEAR_NEAREST_LEVEL)
+    // linear search implementation uses ~40B less program space than binary
+    // search
+    uint8_t ramp_range = ceil - floor;
+    uint8_t step_radius = (ramp_range / (steps - 1)) >> 1;
+    uint8_t guess = floor;
+
+    for(uint8_t i=0; i<steps; i++) {
+        guess = floor + (i * (uint16_t)ramp_range / (steps - 1));
+        int16_t diff = target - guess;
+        if (diff < 0) diff = -diff;
+        if (diff <= step_radius)
+            return guess;
+    }
+    return guess;
+
+    #else
+    // use binary search as long as we have space because the runtime is
+    // theoretically better
+    uint8_t ramp_range = ceil - floor;
+    uint8_t step_radius = (ramp_range / (steps - 1)) >> 1;
+    uint8_t guess = floor;
+    uint8_t l = 0;
+    uint8_t r = steps - 1;
+    while (l <= r) {
+        uint8_t i = (l + r) >> 1;
+        guess = floor + (i * (uint16_t)ramp_range / (steps - 1));
+        int16_t diff = target - guess;
+        if (diff > step_radius)
+            l = i + 1;
+        else if (diff < -step_radius)
+            r = i - 1;
+        else
+            return guess;
+    }
+    // we can end up here because guess and step_radius are truncated
+    return guess;
+    #endif
+}
+
 
 #endif
 

@@ -23,6 +23,9 @@
 //void blink_confirm(uint8_t num);  // no longer used
 void blink_once();
 void blip();
-
+#ifdef USE_CLOSED_FORM_NEAREST_LEVEL
+float fmod(float a, float b);
+#endif
+uint8_t nearest_level(int16_t target, uint8_t floor, uint8_t ceil, uint8_t steps);
 
 #endif

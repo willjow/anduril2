@@ -90,7 +90,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     #if (B_TIMING_ON == B_PRESS_T)
     // hold (initially): go to lowest level (floor), but allow abort for regular click
     else if (event == EV_click1_press) {
-        set_level(nearest_level(1));
+        set_level(nearest_ramp_level(1));
         return MISCHIEF_MANAGED;
     }
     #endif  // B_TIMING_ON == B_PRESS_T
@@ -104,7 +104,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         } else
         #endif
         #else  // B_RELEASE_T or B_TIMEOUT_T
-        set_level(nearest_level(1));
+        set_level(nearest_ramp_level(1));
         #endif
         #ifdef USE_RAMP_AFTER_MOON_CONFIG
         if (dont_ramp_after_moon) {
@@ -137,7 +137,7 @@ uint8_t off_state(Event event, uint16_t arg) {
                 #endif
             }
         #endif
-        set_level(nearest_level(memorized_level));
+        set_level(nearest_ramp_level(memorized_level));
         return MISCHIEF_MANAGED;
     }
     #endif  // if (B_TIMING_ON != B_TIMEOUT_T)
@@ -165,13 +165,13 @@ uint8_t off_state(Event event, uint16_t arg) {
             #endif
             // 0  = ceiling
             // 1+ = full power
-            if (0 == style_2c) turbo_level = nearest_level(MAX_LEVEL);
+            if (0 == style_2c) turbo_level = nearest_ramp_level(MAX_LEVEL);
             else turbo_level = MAX_LEVEL;
         #else
             // simple UI: ceiling
             // full UI: full power
             #ifdef USE_SIMPLE_UI
-            if (simple_ui_active) turbo_level = nearest_level(MAX_LEVEL);
+            if (simple_ui_active) turbo_level = nearest_ramp_level(MAX_LEVEL);
             else
             #endif
             turbo_level = MAX_LEVEL;

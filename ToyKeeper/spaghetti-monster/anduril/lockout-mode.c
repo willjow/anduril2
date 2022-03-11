@@ -34,11 +34,11 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     #endif
 
     // 4 clicks, but hold last: exit and start at floor
-    // handle this up here so that we don't strobe between nearest_level(1) and
+    // handle this up here so that we don't strobe between nearest_ramp_level(1) and
     // the lowest floor while holding 4H
     if (event == EV_click4_hold) {
         if (arg == 0) blip();
-        set_level(nearest_level(1));
+        set_level(nearest_ramp_level(1));
         #ifdef USE_RAMP_AFTER_MOON_CONFIG
         if (dont_ramp_after_moon) {
             current_event = EV_none;
