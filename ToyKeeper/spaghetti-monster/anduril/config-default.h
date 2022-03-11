@@ -191,6 +191,11 @@
 #define USE_AUTOLOCK
 // enable momentary manual memory in lockout
 #define USE_MANUAL_MEMORY_DURING_LOCKOUT
+// enable 3C to unlock to off
+#define USE_3C_UNLOCK_TO_OFF
+// enable momentary lockout aux leds
+//#define USE_MOMENTARY_LOCKOUT_RGB_LED
+
 
 // enable momentary mode
 #define USE_MOMENTARY_MODE
@@ -210,9 +215,6 @@
 //#define USE_LOWPASS_WHILE_ASLEEP
 // always use adc_raw voltage while asleep
 //#define USE_ADC_RAW_WHILE_ASLEEP
-
-// enable momentary lockout aux leds
-//#define USE_MOMENTARY_LOCKOUT_RGB_LED
 
 // use different nearest_level algorithms; the default is binary search
 // use closed form if the MCU has a floating-point unit (untested)

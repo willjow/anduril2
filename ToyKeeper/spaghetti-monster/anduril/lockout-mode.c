@@ -150,6 +150,14 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return MISCHIEF_MANAGED;
     }
     #endif
+    #ifdef USE_3C_UNLOCK_TO_OFF
+    // 3 clicks: exit and turn off
+    else if (event == EV_3clicks) {
+        blink_once();
+        set_state(off_state, 0);
+        return MISCHIEF_MANAGED;
+    }
+    #endif
     #ifdef USE_TINT_RAMPING
     // disable tint ramping during lockout
     else if (event == EV_click3_hold) {
