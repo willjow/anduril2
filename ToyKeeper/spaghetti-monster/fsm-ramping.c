@@ -286,7 +286,7 @@ void gradual_tick() {
 #endif  // ifdef USE_SET_LEVEL_GRADUALLY
 
 
-#if defined(USE_TINT_RAMPING) && (!defined(TINT_RAMP_TOGGLE_ONLY))
+#ifdef USE_TINT_RAMPING
 void update_tint() {
     #ifndef TINT_RAMPING_CORRECTION
     #define TINT_RAMPING_CORRECTION 26  // 140% brightness at middle tint

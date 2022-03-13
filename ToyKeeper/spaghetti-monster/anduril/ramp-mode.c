@@ -37,17 +37,15 @@ uint8_t steady_state(Event event, uint16_t arg) {
     uint8_t style_ramp = ramp_style;
     uint8_t mode_min = ramp_floors[style_ramp];
     uint8_t mode_max = ramp_ceils[style_ramp];
-    uint8_t step_size;
+    uint8_t step_size = 1;
     if (style_ramp) {
         #ifdef USE_SIMPLE_UI
         uint8_t steps = ramp_stepss[1 + simple_ui_active];
         #else
         uint8_t steps = ramp_stepss[1];
         #endif
-        step_size = (mode_max - mode_min) / (steps - 1);
-    }
-    else {
-        step_size = 1;
+        if (steps > 1)
+            step_size = (mode_max - mode_min) / (steps - 1);
     }
 
     // how bright is "turbo"?
@@ -230,8 +228,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
             set_state(lockout_state, 0);
         }
         #endif
-        memorized_level = nearest_ramp_level((int16_t)actual_level \
-                          + (step_size * ramp_direction));
+        memorized_level = nearest_ramp_level(actual_level \
+                          + (int16_t)ramp_direction * step_size);
         #if defined(BLINK_AT_RAMP_MIDDLE) \
             || defined(BLINK_AT_RAMP_CEIL) \
             || defined(BLINK_AT_RAMP_FLOOR)
@@ -256,7 +254,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         #endif
         #if defined(BLINK_AT_STEPS)
         ramp_style = 1;
-        uint8_t nearest = nearest_ramp_level((int16_t)actual_level);
+        uint8_t nearest = nearest_ramp_level(actual_level);
         ramp_style = style_ramp;
         // only blink once for each threshold
         if ((memorized_level != actual_level) &&
@@ -277,12 +275,10 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if ((event == EV_click1_hold_release)
              || (event == EV_click2_hold_release)) {
         #ifdef USE_1H_STYLE_CONFIG
-        if ((event == EV_click2_hold_release) || !style_1h) {
-            ramp_direction = -ramp_direction;
-        }
-        #else
-        ramp_direction = -ramp_direction;
+        if ((event == EV_click2_hold_release) || !style_1h)
         #endif
+        ramp_direction = -ramp_direction;
+
         #ifdef START_AT_MEMORIZED_LEVEL
         save_config_wl();
         #endif
@@ -603,21 +599,9 @@ uint8_t ramp_extras_config_state(Event event, uint16_t arg) {
 void globals_config_save(uint8_t step, uint8_t value) {
     if (0) {}
     #ifdef USE_TINT_RAMPING
-    else if (step == 1+tint_style_config_step) {
-        tint_style = !(!(value));
-        // set tint to middle or edge depending on style being smooth or toggle
-        tint = tint_style ? 1 : 127;
-    }
-    else if (step == 1+tint_5c_level_config_step) {
-        if (value == 0) {
-            tint_5c_level = 127;
-        }
-        else if (value == 1) {
-            tint_5c_level = 254;
-        }
-        else {
-            tint_5c_level = 1;
-        }
+    else if (step == 1+tint_steps_config_step) {
+        if (value && value < 255)  // otherwise we could have step size 0
+            tint_steps = value;
     }
     #endif
     #ifdef USE_JUMP_START
@@ -626,7 +610,6 @@ void globals_config_save(uint8_t step, uint8_t value) {
 }
 
 uint8_t globals_config_state(Event event, uint16_t arg) {
-    // TODO: set number of steps based on how many configurable options
     return config_state_base(event, arg, globals_config_num_steps, globals_config_save);
 }
 #endif

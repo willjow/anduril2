@@ -103,10 +103,9 @@ uint8_t strobe_state(Event event, uint16_t arg) {
     // ... and save new strobe settings
     else if (event == EV_click1_hold_release) {
         #ifdef USE_1H_STYLE_CONFIG
-        if (!style_1h) { ramp_direction = -ramp_direction; }
-        #else
-        ramp_direction = -ramp_direction;
+        if (!style_1h)
         #endif
+        ramp_direction = -ramp_direction;
         save_config();
         return MISCHIEF_MANAGED;
     }

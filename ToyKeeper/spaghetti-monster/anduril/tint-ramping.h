@@ -21,20 +21,14 @@
 #define TINT_RAMPING_H
 
 // 0: smooth tint ramp
-// 1: toggle tint only between two extremes
-#ifdef TINT_RAMP_TOGGLE_ONLY
-uint8_t tint_style = 1;
-#else
-uint8_t tint_style = 0;
-#endif
+// 1: stepped tint ramp
+#define DEFAULT_TINT_STYLE 0
+uint8_t tint_style = DEFAULT_TINT_STYLE;
 
-#ifndef DEFAULT_TINT_5C_LEVEL
-#define DEFAULT_TINT_5C_LEVEL 127
-#endif
-// 127: middle    (corresponds to menu input 0)
-// 254: channel 1 (corresponds to menu input 1)
-//   1: channel 2 (corresponds to menu input 2)
-uint8_t tint_5c_level = DEFAULT_TINT_5C_LEVEL;
+// number of steps for stepped tint ramping
+// (stepped ramping and two tint steps reduces to tint toggling)
+#define DEFAULT_TINT_STEPS 2
+uint8_t tint_steps = DEFAULT_TINT_STEPS;
 
 #ifdef USE_MANUAL_MEMORY
 uint8_t manual_memory_tint;
@@ -43,5 +37,7 @@ uint8_t manual_memory_tint;
 // not actually a mode, more of a fallback under other modes
 uint8_t tint_ramping_state(Event event, uint16_t arg);
 
+// find nearest level for stepped tint ramping
+uint8_t nearest_tint_level(int16_t target);
 
 #endif

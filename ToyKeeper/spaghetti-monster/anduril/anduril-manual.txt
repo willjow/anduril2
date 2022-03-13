@@ -188,7 +188,8 @@ While the light is on, a few actions are available:
 
   - 4C: Go to lockout mode.
 
-  - 5C: Go to tint shortcut (on lights which have it).
+  - 5C: Switch to the other tint ramp style (smooth / stepped)
+        (on lights which have it).
   - 5C: Go to momentary mode (on lights with no tint ramping).
   - 5H: Start a sunset timer.  Details are below in the Sunset Timer section.
 
@@ -713,15 +714,14 @@ Misc Config Menu
 Some models may have an extra config menu for settings which don't fit
 anywhere else.  These settings are, in order:
 
-  - Tint ramp style:
+  - Tint Steps:
 
-    0 = smooth (blend channels in any proportion)
-    1 = toggle (only one channel active at a time)
+    The number of tint steps, from 1 to 254 inclusive.
 
-  - Tint 5C style:
-    0 = go to middle
-    1 = go to channel 1
-    2 = go to channel 2
+    1 = one step that equal mixes each channel
+    2 = toggling behavior (only one channel active at a time)
+    3 = union of the above
+    etc.
 
   - Jump Start level:
 
@@ -761,14 +761,15 @@ be warm white while dim, or cool white while bright.  Or vice-versa.  To
 access this, ramp to the end of the tint range, then keep holding until
 the light blinks a second time.
 
-The misc config menu also has a setting to choose a tint ramp style.
-This can be smooth, allowing the user to smoothly blend both channels in
-whatever ratio they desire...  or it can be "tint toggle" style, where
-only one channel is active at a time.
+Tint ramping also has a stepped mode:
 
-The misc config menu additionally has a setting to choose a style for the tint
-shortcut with 5C.  This can be set to either go to channel 1, channel 2, or in
-the middle of the two.
+    - 5C: Switch between smooth and stepped tint ramping modes
+
+The misc config menu has a setting to configure the amount of steps for stepped
+tint ramping. If this is set to 1, then stepped tint ramping will have just one
+level that equally blends both channels. If this is set to 2, then stepped tint
+ramping reduces to "tint toggling" where only one channel is active at a time.
+This can of course be set to greater values for more steps if desired.
 
 
 UI Reference Table
@@ -790,9 +791,8 @@ Off              Full    5C                Momentary mode
 Off              Full    7C                Aux LEDs: Next pattern
 Off              Full    7H                Aux LEDs: Next color
 Off              Full    9H                Misc config menu (varies per light)
-                                                1: tint ramp config
-                                                2: tint 5C config
-                                                3: jump start config
+                                                1: tint steps config
+                                                2: jump start config
 Off              Full    10C               Enable Simple UI
 Off              Simple  10H               Disable Simple UI
 Off              Full    10H               Simple UI ramp config menu:
@@ -812,7 +812,7 @@ Ramp             Any     3H                Tint ramping "up" (on some lights; co
 Ramp             Any     4H                Tint ramping "down" (on some lights)
 Ramp             Full    3H                Momentary turbo (on lights without tint ramping)
 Ramp             Any     4C                Lockout mode
-Ramp             Full    5C                Tint ramping shortcut (on some lights)
+Ramp             Full    5C                Change tint ramp style (smooth / stepped) (on some lights)
 Ramp             Full    5C                Momentary mode (on lights without tint ramping)
 Ramp             Full    5H                Sunset timer on, and add 5 minutes
 Ramp             Full    7H                Ramp config menu:

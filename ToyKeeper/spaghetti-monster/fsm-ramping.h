@@ -27,11 +27,12 @@
 uint8_t actual_level = 0;
 
 #ifdef USE_TINT_RAMPING
-#ifdef TINT_RAMP_TOGGLE_ONLY
-uint8_t tint = 0;
-#else
-uint8_t tint = 128;
-#endif
+// tints:
+//   127: middle    (corresponds to menu input 0)
+//   254: channel 1 (corresponds to menu input 1)
+//     1: channel 2 (corresponds to menu input 2)
+uint8_t tint = 127;
+void update_tint();
 #define USE_TRIANGLE_WAVE
 #endif
 
@@ -40,10 +41,6 @@ uint8_t tint = 128;
 uint8_t gradual_target;
 inline void set_level_gradually(uint8_t lvl);
 void gradual_tick();
-#endif
-
-#if defined(USE_TINT_RAMPING) && (!defined(TINT_RAMP_TOGGLE_ONLY))
-void update_tint();
 #endif
 
 // auto-detect the data type for PWM tables

@@ -26,7 +26,7 @@ inline void set_level_override(uint8_t level);
 // has two channels of independent LEDs
 #define USE_TINT_RAMPING
 // ... but it doesn't make sense to ramp between; only toggle
-#define TINT_RAMP_TOGGLE_ONLY
+#define DEFAULT_TINT_STYLE 2
 
 // main LEDs
 //   max regulated: ~1750 lm

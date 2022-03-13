@@ -37,31 +37,13 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     uint8_t style_1h = ramp_1h_style;
     #endif
 
+    uint8_t step_size = 1;
+    if (tint_style && tint_steps > 1)
+        step_size = 253 / (tint_steps - 1);
+
     // click, click, hold: change the tint
     // click, click, click, hold: change the tint downward
     if ((event == EV_click3_hold) || (event == EV_click4_hold)) {
-        ///// tint-toggle mode
-        // toggle once on first frame; ignore other frames
-        if (tint_style) {
-            // only respond on first frame
-            if (arg) return EVENT_NOT_HANDLED;
-
-            // force tint to be 1 or 254
-            if ((event == EV_click4_hold) || (tint != 1)) { tint = 254;}
-
-            if (event == EV_click3_hold) {
-                #ifdef USE_1H_STYLE_CONFIG
-                if (style_1h) { tint = 1; }
-                else { tint ^= 0xFF; }  // invert between 1 and 254
-                #else
-                tint ^= 0xFF;  // invert between 1 and 254
-                #endif
-            }
-            set_level(actual_level);
-            return EVENT_HANDLED;
-        }
-
-        ///// smooth tint-ramp mode
         // reset at beginning of movement
         if (! arg) {
             active = 1;  // first frame means this is for us
@@ -75,24 +57,17 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             }
             else if (tint <= 1) {
                 #ifdef USE_1H_STYLE_CONFIG
-                if (!style_1h) {
-                    tint_ramp_direction = 1;
-                }
-                #else
-                tint_ramp_direction = 1;
+                if (!style_1h)
                 #endif
+                tint_ramp_direction = 1;
             }
         }
         // ignore event if we weren't the ones who handled the first frame
         if (! active) return EVENT_HANDLED;
 
         // change normal tints
-        if ((tint_ramp_direction > 0) && (tint < 254)) {
-            tint += 1;
-        }
-        else if ((tint_ramp_direction < 0) && (tint > 1)) {
-            tint -= 1;
-        }
+        tint = nearest_tint_level(tint + (int16_t)tint_ramp_direction * step_size);
+
         // if the user kept pressing long enough, go the final step
         if (past_edge_counter == 64) {
             past_edge_counter ++;
@@ -114,14 +89,13 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     else if ((event == EV_click3_hold_release)
              || (event == EV_click4_hold_release)) {
         active = 0;  // ignore next hold if it wasn't meant for us
+
         // reverse
         #ifdef USE_1H_STYLE_CONFIG
-        if ((event == EV_click4_hold_release) || !style_1h) {
-            tint_ramp_direction = -tint_ramp_direction;
-        }
-        #else
-        tint_ramp_direction = -tint_ramp_direction;
+        if ((event == EV_click4_hold_release) || !style_1h)
         #endif
+        tint_ramp_direction = -tint_ramp_direction;
+
         #ifdef START_AT_MEMORIZED_TINT
         // remember tint after battery change
         save_config_wl();
@@ -132,15 +106,11 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 5 clicks: go to/from tint shortcut
+    // 5 clicks: toggle between smooth/stepped tint ramping
     else if (event == EV_5clicks) {
-        uint8_t level_5c = tint_5c_level;
-        if (tint != level_5c) {
-            tint = level_5c;
-        }
-        else {
-            tint = prev_tint;
-        }
+        tint_style = !tint_style;
+        blip();
+        tint = nearest_tint_level(tint);
         #ifdef START_AT_MEMORIZED_TINT
         // remember tint after battery change
         save_config_wl();
@@ -155,6 +125,15 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     return EVENT_NOT_HANDLED;
 }
 
+uint8_t nearest_tint_level(int16_t target) {
+    if (tint_style)
+        return nearest_level(target, 1, 254, tint_steps);
+    if (target >= 254)
+        return 254;
+    if (target <= 1)
+        return 1;
+    return target;
+}
 
 #endif
 

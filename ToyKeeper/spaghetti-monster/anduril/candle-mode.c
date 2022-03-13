@@ -80,10 +80,9 @@ uint8_t candle_mode_state(Event event, uint16_t arg) {
         if (! arg) {
             if (candle_mode_brightness >= MAX_CANDLE_LEVEL) {
                 #ifdef USE_1H_STYLE_CONFIG
-                if (!style_1h) { ramp_direction = -1; }
-                #else
-                ramp_direction = -1;
+                if (!style_1h)
                 #endif
+                ramp_direction = -1;
             }
             else if (candle_mode_brightness <= 1) {
                 ramp_direction = 1;
