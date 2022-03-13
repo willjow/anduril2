@@ -2,27 +2,6 @@ Tasks to do...
 
 
 - TODO(willjow)
-  Replace current "tint shortcut" UI with a stepped mode similar to the stepped
-  mode for output ramping.
-    - retain 3H/4H to tint ramp, change 5C to toggle stepped/smooth mode
-      (basically same UI as output ramping, but with 2 more clicks)
-    - replace both the "tint ramp config" and "tint 5C config" menus with the
-      stepped/smooth tint toggle menu
-        - UI: number of clicks is the number of steps; e.g.
-              0C: smooth
-              1C: middle only
-              2C: ch 1, ch 2
-              3C: ch 1, mid, ch2
-              .
-              :
-        - notice that 2C here makes the "tint ramp config" redundant
-        - 1C/3C here is acceptably close to the current "tint 5C config"
-          functionality
-    - it would probably not be very useful to be able to set a tint
-      floor/ceiling, so this should be enough
-
-
-- TODO(willjow)
   Fix blinking when adjusting tint?
     - appears to be correlated with whether we save_config/save_config_wl,
       maybe this is related to having to cli() before writing eeprom???
