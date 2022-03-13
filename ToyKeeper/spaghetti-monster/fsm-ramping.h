@@ -27,11 +27,14 @@
 uint8_t actual_level = 0;
 
 #ifdef USE_TINT_RAMPING
+#ifndef DEFAULT_TINT
+#define DEFAULT_TINT 127
+#endif
 // tints:
 //   127: middle    (corresponds to menu input 0)
 //   254: channel 1 (corresponds to menu input 1)
 //     1: channel 2 (corresponds to menu input 2)
-uint8_t tint = 127;
+uint8_t tint = DEFAULT_TINT;
 void update_tint();
 #define USE_TRIANGLE_WAVE
 #endif

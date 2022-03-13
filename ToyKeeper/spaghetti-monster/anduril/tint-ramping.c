@@ -119,12 +119,15 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     // 5 clicks: toggle between smooth/stepped tint ramping
     else if (event == EV_5clicks) {
         tint_style = !style_tint;
-        blip();
-        tint = nearest_tint_level(tint);
+        #ifdef MEMORIZE_TINT_STYLE
+        save_config();
+        #endif
         #ifdef START_AT_MEMORIZED_TINT
         // remember tint after battery change
         save_config_wl();
         #endif
+        blip();
+        tint = nearest_tint_level(tint);
         set_level(actual_level);
         return EVENT_HANDLED;
     }

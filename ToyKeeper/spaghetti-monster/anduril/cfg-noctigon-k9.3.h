@@ -28,6 +28,7 @@ inline void set_level_override(uint8_t level);
 // ... but it doesn't make sense to ramp between; only toggle
 #define DEFAULT_TINT_STYLE 1
 #define DEFAULT_TINT_STEPS 2
+#define DEFAULT_TINT 1
 
 // main LEDs
 //   max regulated: ~1750 lm

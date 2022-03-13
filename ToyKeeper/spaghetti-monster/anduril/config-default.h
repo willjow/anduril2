@@ -70,6 +70,12 @@
 // default ramp style: 0 = smooth, 1 = stepped
 #define RAMP_STYLE 0
 
+// save ramp style between battery changes
+#define MEMORIZE_RAMP_STYLE
+
+// save tint style between battery changes
+#define MEMORIZE_TINT_STYLE
+
 // smooth ramp speed: 1, 2, 3, 4, ...  for 1X speed, 1/2, 1/3rd, 1/4th, ...
 #define USE_RAMP_SPEED_CONFIG
 

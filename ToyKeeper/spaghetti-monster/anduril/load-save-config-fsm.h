@@ -23,7 +23,9 @@
 // auto-detect how many eeprom bytes
 #define USE_EEPROM
 typedef enum {
+    #ifdef MEMORIZE_RAMP_STYLE
     ramp_style_e,
+    #endif
     #ifdef USE_RAMP_CONFIG
     ramp_smooth_floor_e,
     ramp_smooth_ceil_e,
@@ -62,6 +64,9 @@ typedef enum {
         #endif
     #endif
     #ifdef USE_TINT_RAMPING
+        #ifdef MEMORIZE_TINT_STYLE
+        tint_style_e,
+        #endif
         tint_steps_e,
     #endif
     #ifdef USE_JUMP_START

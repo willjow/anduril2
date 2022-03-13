@@ -408,7 +408,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 3 clicks: toggle smooth vs discrete ramping
     else if (event == EV_3clicks) {
         ramp_style = !ramp_style;
+        #ifdef MEMORIZE_RAMP_STYLE
         save_config();
+        #endif
         #ifdef START_AT_MEMORIZED_LEVEL
         save_config_wl();
         #endif

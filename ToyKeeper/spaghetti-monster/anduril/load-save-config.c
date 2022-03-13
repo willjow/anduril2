@@ -25,7 +25,9 @@
 
 void load_config() {
     if (load_eeprom()) {
+        #ifdef MEMORIZE_RAMP_STYLE
         ramp_style = eeprom[ramp_style_e];
+        #endif
         #ifdef USE_RAMP_CONFIG
         ramp_floors[0] = eeprom[ramp_smooth_floor_e];
         ramp_ceils[0] = eeprom[ramp_smooth_ceil_e];
@@ -64,6 +66,9 @@ void load_config() {
             #endif
         #endif
         #ifdef USE_TINT_RAMPING
+            #ifdef MEMORIZE_TINT_STYLE
+            tint_style = eeprom[tint_style_e];
+            #endif
             tint_steps = eeprom[tint_steps_e];
         #endif
         #ifdef USE_JUMP_START
@@ -112,7 +117,9 @@ void load_config() {
 }
 
 void save_config() {
+    #ifdef MEMORIZE_RAMP_STYLE
     eeprom[ramp_style_e] = ramp_style;
+    #endif
     #ifdef USE_RAMP_CONFIG
     eeprom[ramp_smooth_floor_e] = ramp_floors[0];
     eeprom[ramp_smooth_ceil_e] = ramp_ceils[0];
@@ -151,6 +158,9 @@ void save_config() {
         #endif
     #endif
     #ifdef USE_TINT_RAMPING
+        #ifdef MEMORIZE_TINT_STYLE
+        eeprom[tint_style_e] = tint_style;
+        #endif
         eeprom[tint_steps_e] = tint_steps;
     #endif
     #ifdef USE_JUMP_START
