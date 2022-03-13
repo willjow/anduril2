@@ -33,12 +33,15 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
     // don't look like they were meant to be here
     static uint8_t active = 0;
 
+    uint8_t style_tint = tint_style;
     #ifdef USE_1H_STYLE_CONFIG
     uint8_t style_1h = ramp_1h_style;
     #endif
 
     uint8_t step_size = 1;
-    if (tint_style && tint_steps > 1)
+    if (style_tint
+        && tint_steps > 1
+        && (0 < prev_tint && prev_tint < 255))  // allow step from auto to edge
         step_size = 253 / (tint_steps - 1);
 
     // click, click, hold: change the tint
@@ -65,11 +68,18 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         // ignore event if we weren't the ones who handled the first frame
         if (! active) return EVENT_HANDLED;
 
+        // ramp slower in discrete mode
+        if (style_tint && (arg % HOLD_TIMEOUT != 0)) {
+            return MISCHIEF_MANAGED;
+        }
+
         // change normal tints
         tint = nearest_tint_level(tint + (int16_t)tint_ramp_direction * step_size);
 
         // if the user kept pressing long enough, go the final step
-        if (past_edge_counter == 64 && (tint == 1 || tint == 254)) {
+        if ((tint == 1 || tint == 254)
+            && ((!style_tint && past_edge_counter == past_edge_timeout)
+                || (style_tint && past_edge_counter == PAST_EDGE_TIMEOUT_FACTOR))) {
             past_edge_counter ++;
             tint ^= 1;  // 1 -> 0, 254 -> 255
             blip();
@@ -108,7 +118,7 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
 
     // 5 clicks: toggle between smooth/stepped tint ramping
     else if (event == EV_5clicks) {
-        tint_style = !tint_style;
+        tint_style = !style_tint;
         blip();
         tint = nearest_tint_level(tint);
         #ifdef START_AT_MEMORIZED_TINT
@@ -119,20 +129,16 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // we can't use AUTO_REVERSE_TIME for tint ramping the same manner as in
+    // we can't use AUTO_REVERSE_TIME for tint ramping in the same manner as in
     // ramp-mode because EV_tick events will be consumed there
 
     return EVENT_NOT_HANDLED;
 }
 
 uint8_t nearest_tint_level(int16_t target) {
-    if (tint_style)
-        return nearest_level(target, 1, 254, tint_steps);
-    if (target >= 254)
-        return 254;
-    if (target <= 1)
-        return 1;
-    return target;
+    if (tint == 0 && target < 0) return 0;
+    if (tint == 255 && target > 255) return 255;
+    return nearest_level(target, 1, 254, tint_steps * tint_style);
 }
 
 #endif

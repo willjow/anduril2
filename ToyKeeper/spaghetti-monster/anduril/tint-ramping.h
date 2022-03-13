@@ -30,6 +30,9 @@ uint8_t tint_style = DEFAULT_TINT_STYLE;
 #define DEFAULT_TINT_STEPS 2
 uint8_t tint_steps = DEFAULT_TINT_STEPS;
 
+#define PAST_EDGE_TIMEOUT_FACTOR 3
+const uint8_t past_edge_timeout = PAST_EDGE_TIMEOUT_FACTOR * HOLD_TIMEOUT;
+
 #ifdef USE_MANUAL_MEMORY
 uint8_t manual_memory_tint;
 #endif
