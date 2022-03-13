@@ -29,12 +29,16 @@
 
 // 0: smooth tint ramp
 // 1: stepped tint ramp
+#ifndef DEFAULT_TINT_STYLE
 #define DEFAULT_TINT_STYLE 0
+#endif
 uint8_t tint_style = DEFAULT_TINT_STYLE;
 
 // number of steps for stepped tint ramping
 // (stepped ramping and two tint steps reduces to tint toggling)
+#ifndef DEFAULT_TINT_STEPS
 #define DEFAULT_TINT_STEPS 2
+#endif
 uint8_t tint_steps = DEFAULT_TINT_STEPS;
 
 #define PAST_EDGE_TIMEOUT_FACTOR 3
