@@ -20,6 +20,13 @@
 #ifndef TINT_RAMPING_H
 #define TINT_RAMPING_H
 
+#ifndef TINT_3H_DIRECTION
+#define TINT_3H_DIRECTION -1
+#endif
+#ifndef TINT_4H_DIRECTION
+#define TINT_4H_DIRECTION 1
+#endif
+
 // 0: smooth tint ramp
 // 1: stepped tint ramp
 #define DEFAULT_TINT_STYLE 0

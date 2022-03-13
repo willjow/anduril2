@@ -23,7 +23,7 @@
 #include "tint-ramping.h"
 
 uint8_t tint_ramping_state(Event event, uint16_t arg) {
-    static int8_t tint_ramp_direction = -1;
+    static int8_t tint_ramp_direction = TINT_3H_DIRECTION;
     static uint8_t prev_tint = 0;
     // don't activate auto-tint modes unless the user hits the edge
     // and keeps pressing for a while
@@ -53,16 +53,16 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
             past_edge_counter = 0;  // doesn't start until user hits the edge
             // fix ramp direction on first frame if necessary
             if (event == EV_click4_hold) {
-                tint_ramp_direction = 1;
+                tint_ramp_direction = TINT_4H_DIRECTION;
             }
             else if (tint >= 254) {
-                tint_ramp_direction = -1;
+                tint_ramp_direction = TINT_3H_DIRECTION;
             }
             else if (tint <= 1) {
                 #ifdef USE_1H_STYLE_CONFIG
                 if (!style_1h)
                 #endif
-                tint_ramp_direction = 1;
+                tint_ramp_direction = TINT_4H_DIRECTION;
             }
         }
         // ignore event if we weren't the ones who handled the first frame
