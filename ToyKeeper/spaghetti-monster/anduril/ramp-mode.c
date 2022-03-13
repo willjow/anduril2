@@ -600,8 +600,11 @@ void globals_config_save(uint8_t step, uint8_t value) {
     if (0) {}
     #ifdef USE_TINT_RAMPING
     else if (step == 1+tint_steps_config_step) {
-        if (value && value < 255)  // otherwise we could have step size 0
+        if (value && value < 255) {
+            // otherwise we could have step size 0
             tint_steps = value;
+            tint = nearest_tint_level(tint);
+        }
     }
     #endif
     #ifdef USE_JUMP_START

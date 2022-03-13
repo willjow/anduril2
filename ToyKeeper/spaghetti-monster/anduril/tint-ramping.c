@@ -69,7 +69,7 @@ uint8_t tint_ramping_state(Event event, uint16_t arg) {
         tint = nearest_tint_level(tint + (int16_t)tint_ramp_direction * step_size);
 
         // if the user kept pressing long enough, go the final step
-        if (past_edge_counter == 64) {
+        if (past_edge_counter == 64 && (tint == 1 || tint == 254)) {
             past_edge_counter ++;
             tint ^= 1;  // 1 -> 0, 254 -> 255
             blip();
