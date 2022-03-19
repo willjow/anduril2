@@ -94,24 +94,8 @@ uint8_t nearest_level(int16_t target, uint8_t floor, uint8_t ceil, uint8_t steps
         return target + (step_size - mod);
     return target - mod;
 
-    #elif defined(USE_LINEAR_NEAREST_LEVEL)
-    // linear search implementation uses ~40B less program space than binary
-    // search
-    uint8_t ramp_range = ceil - floor;
-    uint8_t step_radius = (ramp_range / (steps - 1)) >> 1;
-    uint8_t guess = floor;
-
-    for(uint8_t i=0; i<steps; i++) {
-        guess = floor + (i * (uint16_t)ramp_range / (steps - 1));
-        int16_t diff = target - guess;
-        if (diff < 0) diff = -diff;
-        if (diff <= step_radius)
-            return guess;
-    }
-    return guess;
-
-    #else
-    // use binary search as long as we have space because the runtime is
+    #elif defined(USE_BINARY_SEARCH_NEAREST_LEVEL)
+    // use binary search if we have space because the runtime is
     // theoretically better
     uint8_t ramp_range = ceil - floor;
     uint8_t step_radius = (ramp_range / (steps - 1)) >> 1;
@@ -130,6 +114,22 @@ uint8_t nearest_level(int16_t target, uint8_t floor, uint8_t ceil, uint8_t steps
             return guess;
     }
     // we can end up here because guess and step_radius are truncated
+    return guess;
+
+    #else
+    // linear search implementation uses ~40B less program space than binary
+    // search
+    uint8_t ramp_range = ceil - floor;
+    uint8_t step_radius = (ramp_range / (steps - 1)) >> 1;
+    uint8_t guess = floor;
+
+    for(uint8_t i=0; i<steps; i++) {
+        guess = floor + (i * (uint16_t)ramp_range / (steps - 1));
+        int16_t diff = target - guess;
+        if (diff < 0) diff = -diff;
+        if (diff <= step_radius)
+            return guess;
+    }
     return guess;
     #endif
 }

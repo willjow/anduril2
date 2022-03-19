@@ -226,6 +226,6 @@
 // use closed form if the MCU has a floating-point unit (untested)
 //#define USE_CLOSED_FORM_NEAREST_LEVEL
 // use linear search to save ~40B of program space over binary search
-//#define USE_LINEAR_NEAREST_LEVEL
+//#define USE_BINARY_SEARCH_NEAREST_LEVEL
 
 #endif
