@@ -217,10 +217,9 @@
 
 // if the aux LEDs oscillate between "full battery" and "empty battery"
 // while in "voltage" mode, enable this to reduce the amplitude of
-// those oscillations
+// those oscillations (by default, it just uses raw, unfiltered measurements
+// off the ADC)
 //#define USE_LOWPASS_WHILE_ASLEEP
-// always use adc_raw voltage while asleep
-//#define USE_ADC_RAW_WHILE_ASLEEP
 
 // use different nearest_level algorithms; the default is binary search
 // use closed form if the MCU has a floating-point unit (untested)

@@ -78,8 +78,8 @@ void sleep_until_eswitch_pressed()
         }
         if (irq_adc) {  // ADC done measuring
             //adc_deferred_enable = 1;  // should already be 1
-            #ifdef USE_ADC_RAW_WHILE_ASLEEP
-            adc_reset = 1;  // don't lowpass while asleep
+            #ifndef USE_LOWPASS_WHILE_ASLEEP
+            adc_reset = 1;  // use raw measurements while asleep
             #endif
             adc_deferred();
             //ADC_off();  // takes care of itself
