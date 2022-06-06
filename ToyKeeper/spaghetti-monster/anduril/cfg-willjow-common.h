@@ -69,3 +69,8 @@
 #ifdef USE_PARTY_STROBE_MODE
 #undef USE_PARTY_STROBE_MODE
 #endif
+
+#ifdef BLINK_BRIGHTNESS
+#undef BLINK_BRIGHTNESS
+#endif
+#define BLINK_BRIGHTNESS memorized_level
