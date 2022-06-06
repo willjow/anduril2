@@ -20,3 +20,4 @@ ToyKeeper/spaghetti-monster/*
 !ToyKeeper/spaghetti-monster/*.h
 !ToyKeeper/spaghetti-monster/spaghetti-monster.txt
 !ToyKeeper/spaghetti-monster/anduril/
+ToyKeeper/spaghetti-monster/anduril/anduril.*

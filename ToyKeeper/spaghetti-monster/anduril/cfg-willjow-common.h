@@ -1,0 +1,71 @@
+#ifdef MEMORIZE_RAMP_STYLE
+#undef MEMORIZE_RAMP_STYLE
+#endif
+
+#ifdef MEMORIZE_TINT_STYLE
+#undef MEMORIZE_TINT_STYLE
+#endif
+
+#ifdef SIMPLE_UI_ACTIVE
+#undef SIMPLE_UI_ACTIVE
+#endif
+#define SIMPLE_UI_ACTIVE 0
+
+#ifdef RAMP_SMOOTH_FLOOR
+#undef RAMP_SMOOTH_FLOOR
+#endif
+#define RAMP_SMOOTH_FLOOR 1  // level 1 is unreliable (?)
+
+#ifdef RAMP_SMOOTH_CEIL
+#undef RAMP_SMOOTH_CEIL
+#endif
+#define RAMP_SMOOTH_CEIL 110
+
+#ifdef RAMP_DISCRETE_FLOOR
+#undef RAMP_DISCRETE_FLOOR
+#endif
+#define RAMP_DISCRETE_FLOOR 20
+
+#ifdef RAMP_DISCRETE_CEIL
+#undef RAMP_DISCRETE_CEIL
+#endif
+#define RAMP_DISCRETE_CEIL DEFAULT_LEVEL
+
+#ifdef DEFAULT_1H_STYLE
+#undef DEFAULT_1H_STYLE
+#endif
+#define DEFAULT_1H_STYLE 1  // always ramp up
+
+#ifdef DEFAULT_2C_STYLE
+#undef DEFAULT_2C_STYLE
+#endif
+#define DEFAULT_2C_STYLE 2  // default to Anduril 2 style
+
+#ifdef DEFAULT_RAMP_SPEED
+#undef DEFAULT_RAMP_SPEED
+#endif
+#define DEFAULT_RAMP_SPEED 2  // WDT ticks per "frame", must be 1 or more
+
+#ifndef BLINK_AT_RAMP_CEIL
+#define BLINK_AT_RAMP_CEIL
+#endif
+
+#ifdef USE_MANUAL_MEMORY_DURING_LOCKOUT
+#undef USE_MANUAL_MEMORY_DURING_LOCKOUT
+#endif
+
+#ifdef USE_3C_UNLOCK_TO_OFF
+#undef USE_3C_UNLOCK_TO_OFF
+#endif
+
+#ifndef USE_BINARY_SEARCH_NEAREST_LEVEL
+#define USE_BINARY_SEARCH_NEAREST_LEVEL
+#endif
+
+#ifdef USE_LIGHTNING_MODE
+#undef USE_LIGHTNING_MODE
+#endif
+
+#ifdef USE_PARTY_STROBE_MODE
+#undef USE_PARTY_STROBE_MODE
+#endif
