@@ -29,7 +29,7 @@ export MCU=attiny$ATTINY
 export CC=avr-gcc
 export OBJCOPY=avr-objcopy
 export DFPFLAGS="-B $ATTINY_DFP/gcc/dev/$MCU/ -I $ATTINY_DFP/include/"
-export CFLAGS="-Wall -g -Os -mmcu=$MCU -c -std=gnu99 -fgnu89-inline -fwhole-program -DATTINY=$ATTINY -I.. -I../.. -I../../.. -fshort-enums $DFPFLAGS"
+export CFLAGS="-Wall -g -Os -mmcu=$MCU -c -std=gnu99 -fgnu89-inline -fwhole-program -DATTINY=$ATTINY -I.. -I../.. -I../../.. -fshort-enums $DFPFLAGS --param=min-pagesize=0"
 export OFLAGS="-Wall -g -Os -mmcu=$MCU -mrelax $DFPFLAGS"
 export LDFLAGS="-fgnu89-inline"
 export OBJCOPYFLAGS='--set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0 --no-change-warnings -O ihex --remove-section .fuse'
