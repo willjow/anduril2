@@ -25,6 +25,7 @@
 
 // actual_level: last ramp level set by set_level()
 uint8_t actual_level = 0;
+uint8_t memorized_level = DEFAULT_LEVEL;
 
 #ifdef USE_TINT_RAMPING
 #ifndef DEFAULT_TINT
